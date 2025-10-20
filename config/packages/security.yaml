@@ -25,6 +25,10 @@ security:
                 enable_csrf: true
                 username_parameter: email
                 password_parameter: password
+                post_only: true
+                use_forward: false
+                use_referer: false
+                default_target_path: app_home
             logout:
                 path: app_logout
                 # target: app_home
@@ -37,12 +41,19 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
+        # Routes accessibles à tous, même non connectés
         - { path: ^/login$, roles: PUBLIC_ACCESS }
         - { path: ^/register, roles: PUBLIC_ACCESS }
-        - { path: ^/logout, roles: PUBLIC_ACCESS }
         - { path: ^/resetting, roles: PUBLIC_ACCESS }
+        
+        # La route de déconnexion doit être accessible à tous les utilisateurs connectés
+        - { path: ^/logout, roles: IS_AUTHENTICATED_FULLY }
+        
+        # Section admin réservée aux administrateurs
         - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        
+        # Toutes les autres routes nécessitent d'être connecté
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 
 when@test:
     security:
