@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}TypeIntervention{% endblock %}
+
+{% block body %}
+    <h1>TypeIntervention</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ type_intervention.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ type_intervention.nom }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_type_intervention_index') }}">back to list</a>
+
+    <a href="{{ path('app_type_intervention_edit', {'id': type_intervention.id}) }}">edit</a>
+
+    {{ include('type_intervention/_delete_form.html.twig') }}
+{% endblock %}
