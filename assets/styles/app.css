@@ -1,2 +1,121 @@
 @import "tailwindcss";
 @source not "../../public";
+
+/* --- Variables CSS et Reset --- */
+:root {
+    --color-primary-red: #E74C3C;
+    --color-primary-red-light: #FADBD8;
+    --color-bg: #F8F9FA;
+    --color-white: #FFFFFF;
+    --color-text-dark: #212529;
+    --color-text-light: #6C757D;
+    --color-border: #EAECEE;
+
+    --border-radius: 16px;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    --font-family: 'Poppins', 'Helvetica Neue', Arial, sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--color-bg);
+    color: var(--color-text-dark);
+}
+
+/* --- Structure Principale --- */
+.page-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 80px;
+    background-color: var(--color-white);
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    border-right: 1px solid var(--color-border);
+    flex-shrink: 0;
+}
+
+.sidebar-icon {
+    font-size: 1.5rem;
+    color: var(--color-text-light);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.sidebar-icon:hover,
+.sidebar-icon.active {
+    color: var(--color-primary-red);
+}
+
+.dashboard {
+    flex-grow: 1;
+    padding: 20px 30px;
+    overflow-y: auto;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.dashboard-header h1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-profile img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+/* --- Composants réutilisables --- */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity 0.3s ease;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+.btn-red {
+    background-color: var(--color-primary-red);
+    color: var(--color-white);
+}
+
+.card {
+    background-color: var(--color-white);
+    padding: 24px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+}

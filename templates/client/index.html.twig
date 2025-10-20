@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des clients{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="clients-wrapper">
+        <h1 style="text-align:left; margin-bottom:14px;">Liste des clients</h1>
+        
+        {% if clients|length > 0 %}
+            <div class="cards-grid">
+            {% for client in clients %}
+                <div class="client-card">
+                    <div class="client-title">{{ client.nom }} {{ client.prenom }}</div>
+                    <ul class="client-info-list">
+                        <li><strong>Email :</strong> {{ client.email }}</li>
+                        <li><strong>Adresse :</strong> {{ client.adresse }}</li>
+                        <li><strong>Ville :</strong> {{ client.ville }}</li>
+                        <li><strong>Code postal :</strong> {{ client.codePostal }}</li>
+                        <li><strong>Tél. fixe :</strong> {{ client.telFixe ?? '-' }}</li>
+                        <li><strong>Tél. GSM :</strong> {{ client.telGsm ?? '-' }}</li>
+                    </ul>
+                    <div class="card-actions">
+                        <a href="{{ path('app_client_show', {'id': client.id}) }}">Voir</a>
+                        <a href="{{ path('app_client_edit', {'id': client.id}) }}">Éditer</a>
+                    </div>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <div class="no-records">Aucun client trouvé.</div>
+        {% endif %}
+        <a class="create-new-btn" href="{{ path('app_client_new') }}">Ajouter un client</a>
+    </div>
+{% endblock %}

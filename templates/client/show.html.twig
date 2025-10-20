@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Client - {{ client.nom }} {{ client.prenom }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="client-container">
+    <article class="client-card" aria-labelledby="client-title">
+        <h1 id="client-title">
+            {{ client.nom }} {{ client.prenom }}
+        </h1>
+        <ul class="client-info-list">
+            <li>
+                <span class="client-label">Id</span>
+                <span class="client-value">{{ client.id }}</span>
+            </li>
+            <li>
+                <span class="client-label">Email</span>
+                <span class="client-value">{{ client.email }}</span>
+            </li>
+            <li>
+                <span class="client-label">Adresse</span>
+                <span class="client-value">{{ client.adresse }}</span>
+            </li>
+            <li>
+                <span class="client-label">Ville</span>
+                <span class="client-value">{{ client.ville }}</span>
+            </li>
+            <li>
+                <span class="client-label">Code Postal</span>
+                <span class="client-value">{{ client.codePostal }}</span>
+            </li>
+            <li>
+                <span class="client-label">Tél. fixe</span>
+                <span class="client-value">{{ client.telFixe ?? '-' }}</span>
+            </li>
+            <li>
+                <span class="client-label">Tél. GSM</span>
+                <span class="client-value">{{ client.telGsm ?? '-' }}</span>
+            </li>
+        </ul>
+        <nav class="actions" aria-label="actions client">
+            <a href="{{ path('app_client_index') }}" class="action-link secondary">← Retour</a>
+            <a href="{{ path('app_client_edit', {'id': client.id}) }}" class="action-link">Éditer</a>
+            <span class="action-form">{{ include('client/_delete_form.html.twig') }}</span>
+        </nav>
+    </article>
+</div>
+{% endblock %}
