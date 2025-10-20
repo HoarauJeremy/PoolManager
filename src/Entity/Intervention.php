@@ -64,7 +64,7 @@ class Intervention
     /**
      * @var Collection<int, user>
      */
-    #[ORM\ManyToMany(targetEntity: user::class, inversedBy: 'interventions')]
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'interventions')]
     private Collection $technicens;
 
     public function __construct()
@@ -261,7 +261,7 @@ class Intervention
         return $this->technicens;
     }
 
-    public function addTechnicen(user $technicen): static
+    public function addTechnicen(User $technicen): static
     {
         if (!$this->technicens->contains($technicen)) {
             $this->technicens->add($technicen);
@@ -270,7 +270,7 @@ class Intervention
         return $this;
     }
 
-    public function removeTechnicen(user $technicen): static
+    public function removeTechnicen(User $technicen): static
     {
         $this->technicens->removeElement($technicen);
 
