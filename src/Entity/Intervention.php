@@ -52,9 +52,9 @@ class Intervention
     private Collection $image;
 
     /**
-     * @var Collection<int, Material>
+     * @var Collection<int, Materiel>
      */
-    #[ORM\ManyToMany(targetEntity: Material::class, inversedBy: 'interventions')]
+    #[ORM\ManyToMany(targetEntity: Materiel::class, inversedBy: 'interventions')]
     private Collection $materiel;
 
     #[ORM\ManyToOne(inversedBy: 'interventions')]
@@ -218,14 +218,14 @@ class Intervention
     }
 
     /**
-     * @return Collection<int, Material>
+     * @return Collection<int, Materiel>
      */
     public function getMateriel(): Collection
     {
         return $this->materiel;
     }
 
-    public function addMateriel(Material $materiel): static
+    public function addMateriel(Materiel $materiel): static
     {
         if (!$this->materiel->contains($materiel)) {
             $this->materiel->add($materiel);
@@ -234,7 +234,7 @@ class Intervention
         return $this;
     }
 
-    public function removeMateriel(Material $materiel): static
+    public function removeMateriel(Materiel $materiel): static
     {
         $this->materiel->removeElement($materiel);
 
