@@ -1,125 +1,30 @@
+{# 
+    Template de modification d'un matériel existant
+    Affiche le formulaire pré-rempli avec les données actuelles du matériel
+    Inclut également le formulaire de suppression pour faciliter la gestion
+#}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Modifier le Matériel{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .materiel-form-container {
-            max-width: 400px;
-            margin: 40px auto;
-            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
-            border-radius: 20px;
-            padding: 32px 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .materiel-form-title {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 28px;
-            color: #1a202c;
-        }
-        form[name="materiel"] .form-group {
-            margin-bottom: 18px;
-        }
-        form[name="materiel"] input,
-        form[name="materiel"] textarea,
-        form[name="materiel"] select {
-            width: 100%;
-            padding: 12px 14px;
-            border: none;
-            border-radius: 10px;
-            outline: none;
-            font-size: 1rem;
-            background: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-            margin-bottom: 6px;
-            transition: box-shadow 0.2s;
-        }
-        
-        /* Style spécifique pour le champ interventions (sélection multiple) */
-        form[name="materiel"] select[multiple] {
-            min-height: 120px;
-            padding: 8px;
-        }
-        
-        form[name="materiel"] select[multiple] option {
-            padding: 8px 12px;
-            margin: 2px 0;
-            border-radius: 6px;
-            background: #f8f9fa;
-        }
-        
-        form[name="materiel"] select[multiple] option:checked {
-            background: #339af0;
-            color: white;
-        }
-        form[name="materiel"] input:focus,
-        form[name="materiel"] textarea:focus,
-        form[name="materiel"] select:focus {
-            box-shadow: 0 0 0 2px #339af0;
-        }
-        form[name="materiel"] button,
-        .materiel-form-btn {
-            width: 100%;
-            padding: 12px 0;
-            background-color: #339af0;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            color: #fff;
-            margin-top: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        form[name="materiel"] button:hover,
-        .materiel-form-btn:hover {
-            background-color: #1976d2;
-        }
-        .back-link {
-            display: block;
-            margin: 18px auto 0 auto;
-            text-align: center;
-            font-size: 0.97rem;
-            color: #339af0;
-            text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-            color: #1976d2;
-        }
-        .delete-form {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .delete-btn {
-            background-color: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
-    <div class="materiel-form-container">
-        <h1 class="materiel-form-title">Modifier le matériel</h1>
+    {# Conteneur centré pour le formulaire #}
+    <div class="ml-20 min-h-screen bg-gray-50 flex items-center justify-center p-5">
+        <div class="bg-gradient-to-b from-blue-200 to-blue-300 rounded-3xl p-10 w-full max-w-md shadow-lg">
+            {# Titre de la page #}
+            <h1 class="text-center text-3xl font-bold text-gray-800 mb-8">Modifier le matériel</h1>
 
-        {{ include('materiel/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+            {# Inclusion du formulaire avec label personnalisé #}
+            {{ include('materiel/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-        <a href="{{ path('app_materiel_index') }}" class="back-link">Retour à la liste</a>
+            {# Lien de retour vers la liste #}
+            <a href="{{ path('app_materiel_index') }}" class="block text-center mt-5 text-blue-600 hover:underline text-sm">Retour à la liste</a>
 
-        <div class="delete-form">
-            {{ include('materiel/_delete_form.html.twig') }}
+            {# Formulaire de suppression #}
+            <div class="text-center mt-5">
+                {{ include('materiel/_delete_form.html.twig') }}
+            </div>
         </div>
     </div>
 {% endblock %}

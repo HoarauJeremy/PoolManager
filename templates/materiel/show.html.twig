@@ -1,214 +1,70 @@
+{# 
+    Template d'affichage des détails d'un matériel
+    Affiche toutes les informations d'un matériel avec un design en cartes
+    Inclut les boutons d'action (modifier, supprimer) et de navigation
+#}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Détails du Matériel{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .materiel-show-container {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        
-        .materiel-show-header {
-            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-        
-        .materiel-show-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #1a202c;
-            margin: 0 0 10px 0;
-        }
-        
-        .materiel-id {
-            font-size: 1.1rem;
-            color: #6c757d;
-            margin: 0;
-        }
-        
-        .details-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            margin-bottom: 30px;
-        }
-        
-        .details-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 0;
-        }
-        
-        .details-table th {
-            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
-            padding: 15px 20px;
-            text-align: left;
-            font-weight: bold;
-            color: #1a202c;
-            border: none;
-            font-size: 1rem;
-            width: 200px;
-            border-radius: 10px 0 0 10px;
-        }
-        
-        .details-table td {
-            padding: 15px 20px;
-            border: none;
-            background: #f8f9fa;
-            border-radius: 0 10px 10px 0;
-            font-size: 1rem;
-        }
-        
-        .details-table tr {
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        .details-table tr:not(:last-child) {
-            margin-bottom: 15px;
-        }
-        
-        .description-cell {
-            line-height: 1.6;
-            word-wrap: break-word;
-        }
-        
-        .actions-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-        
-        .action-btn {
-            padding: 12px 24px;
-            border-radius: 10px;
-            text-decoration: none;
-            font-weight: bold;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-        }
-        
-        .action-btn.back {
-            background-color: #6c757d;
-            color: white;
-        }
-        
-        .action-btn.back:hover {
-            background-color: #5a6268;
-            color: white;
-        }
-        
-        .action-btn.edit {
-            background-color: #ffc107;
-            color: #212529;
-        }
-        
-        .action-btn.edit:hover {
-            background-color: #e0a800;
-            color: #212529;
-        }
-        
-        .action-btn.delete {
-            background-color: #dc3545;
-            color: white;
-        }
-        
-        .action-btn.delete:hover {
-            background-color: #c82333;
-            color: white;
-        }
-        
-        .delete-form {
-            margin-top: 20px;
-        }
-        
-        @media (max-width: 768px) {
-            .materiel-show-container {
-                margin: 20px auto;
-                padding: 10px;
-            }
-            
-            .materiel-show-title {
-                font-size: 2rem;
-            }
-            
-            .details-container,
-            .actions-container {
-                padding: 20px;
-            }
-            
-            .details-table th,
-            .details-table td {
-                padding: 12px 15px;
-                font-size: 0.9rem;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .action-btn {
-                width: 100%;
-                max-width: 200px;
-            }
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
-    <div class="materiel-show-container">
-        <div class="materiel-show-header">
-            <h1 class="materiel-show-title">{{ materiel.libelle }}</h1>
-            <p class="materiel-id">ID: {{ materiel.id }}</p>
-        </div>
-
-        <div class="details-container">
-            <table class="details-table">
-                <tbody>
-                    <tr>
-                        <th>Libellé</th>
-                        <td>{{ materiel.libelle }}</td>
-                    </tr>
-                    <tr>
-                        <th>Quantité</th>
-                        <td>{{ materiel.quantite }}</td>
-                    </tr>
-                    <tr>
-                        <th>Description</th>
-                        <td class="description-cell">{{ materiel.description }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="actions-container">
-            <div class="action-buttons">
-                <a href="{{ path('app_materiel_index') }}" class="action-btn back">Retour à la liste</a>
-                <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}" class="action-btn edit">Modifier</a>
+    {# Conteneur principal avec sidebar offset #}
+    <div class="ml-20 min-h-screen bg-gray-50 p-5">
+        <div class="max-w-4xl mx-auto">
+            {# En-tête avec nom et ID du matériel #}
+            <div class="bg-gradient-to-b from-blue-200 to-blue-300 rounded-3xl p-8 mb-8 shadow-lg text-center">
+                <h1 class="text-4xl font-bold text-gray-800 mb-2">{{ materiel.libelle }}</h1>
+                <p class="text-lg text-gray-600">ID: {{ materiel.id }}</p>
             </div>
-            
-            <div class="delete-form">
-                {{ include('materiel/_delete_form.html.twig') }}
+
+            {# Carte des détails du matériel #}
+            <div class="bg-white rounded-3xl p-8 shadow-lg mb-8">
+                <div class="space-y-4">
+                    {# Affichage du libellé #}
+                    <div class="flex">
+                        <div class="w-48 bg-gradient-to-b from-blue-200 to-blue-300 px-5 py-4 rounded-l-lg">
+                            <span class="font-bold text-gray-800">Libellé</span>
+                        </div>
+                        <div class="flex-1 bg-gray-100 px-5 py-4 rounded-r-lg">
+                            <span class="text-gray-800">{{ materiel.libelle }}</span>
+                        </div>
+                    </div>
+                    
+                    {# Affichage de la quantité #}
+                    <div class="flex">
+                        <div class="w-48 bg-gradient-to-b from-blue-200 to-blue-300 px-5 py-4 rounded-l-lg">
+                            <span class="font-bold text-gray-800">Quantité</span>
+                        </div>
+                        <div class="flex-1 bg-gray-100 px-5 py-4 rounded-r-lg">
+                            <span class="text-gray-800">{{ materiel.quantite }}</span>
+                        </div>
+                    </div>
+                    
+                    {# Affichage de la description #}
+                    <div class="flex">
+                        <div class="w-48 bg-gradient-to-b from-blue-200 to-blue-300 px-5 py-4 rounded-l-lg">
+                            <span class="font-bold text-gray-800">Description</span>
+                        </div>
+                        <div class="flex-1 bg-gray-100 px-5 py-4 rounded-r-lg">
+                            <span class="text-gray-800 leading-relaxed break-words">{{ materiel.description }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# Carte des actions #}
+            <div class="bg-white rounded-3xl p-8 shadow-lg text-center">
+                {# Boutons de navigation et modification #}
+                <div class="flex gap-4 justify-center flex-wrap mb-5">
+                    <a href="{{ path('app_materiel_index') }}" class="px-6 py-3 rounded-lg font-bold bg-gray-600 text-white hover:bg-gray-700 transition-colors">Retour à la liste</a>
+                    <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}" class="px-6 py-3 rounded-lg font-bold bg-yellow-500 text-gray-800 hover:bg-yellow-600 transition-colors">Modifier</a>
+                </div>
+                
+                {# Formulaire de suppression #}
+                <div class="mt-5">
+                    {{ include('materiel/_delete_form.html.twig') }}
+                </div>
             </div>
         </div>
     </div>

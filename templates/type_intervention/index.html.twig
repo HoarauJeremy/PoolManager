@@ -1,35 +1,56 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}TypeIntervention index{% endblock %}
+{% block title %}Liste des Types d’interventions{% endblock %}
 
 {% block body %}
-    <h1>TypeIntervention index</h1>
+<div class="ml-24 p-8 bg-gray-100 min-h-screen">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nom</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for type_intervention in type_interventions %}
-            <tr>
-                <td>{{ type_intervention.id }}</td>
-                <td>{{ type_intervention.nom }}</td>
-                <td>
-                    <a href="{{ path('app_type_intervention_show', {'id': type_intervention.id}) }}">show</a>
-                    <a href="{{ path('app_type_intervention_edit', {'id': type_intervention.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <!-- En-tête avec fond dégradé -->
+    <div class="bg-gradient-to-r from-blue-400 to-blue-300 text-center text-white rounded-2xl shadow mb-10 py-8">
+        <h1 class="text-3xl font-bold mb-4 text-black">Liste des Types d’interventions</h1>
+        <a href="{{ path('app_type_intervention_new') }}"
+           class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-5 py-2 rounded-lg shadow transition">
+            Créer un nouveau type
+        </a>
+    </div>
 
-    <a href="{{ path('app_type_intervention_new') }}">Create new</a>
+    {% if type_interventions|length > 0 %}
+        <!-- Grille des cartes -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
+            {% for type_intervention in type_interventions %}
+                <div class="card rounded-2xl shadow-lg bg-white p-6 flex flex-col justify-between border border-gray-100 hover:shadow-xl transition transform hover:-translate-y-1">
+
+                    <!-- Nom du type -->
+                    <div>
+                        <h2 class="text-xl font-semibold text-gray-800 mb-3">
+                            {{ type_intervention.nom }}
+                        </h2>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex justify-between items-center border-t border-gray-200 pt-4 mt-auto space-x-2">
+                        <a href="{{ path('app_type_intervention_edit', {'id': type_intervention.id}) }}"
+                           class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium text-sm px-4 py-2 rounded-lg transition">
+                            Modifier
+                        </a>
+
+                        <form method="post"
+                              action="{{ path('app_type_intervention_delete', {'id': type_intervention.id}) }}"
+                              onsubmit="return confirm('Confirmer la suppression de ce type d’intervention ?');">
+                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ type_intervention.id) }}">
+                            <button type="submit"
+                                    class="bg-red-500 hover:bg-red-600 text-white font-medium text-sm px-4 py-2 rounded-lg transition">
+                                Supprimer
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center text-gray-500 mt-12 text-lg">
+            Aucun type d’intervention trouvé.
+        </div>
+    {% endif %}
+</div>
 {% endblock %}

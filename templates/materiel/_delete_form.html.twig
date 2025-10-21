@@ -1,4 +1,12 @@
-<form method="post" action="{{ path('app_materiel_delete', {'id': materiel.id}) }}" onsubmit="return confirm('Are you sure you want to delete this item?');">
+{# 
+    Template de formulaire de suppression de matériel
+    Formulaire sécurisé avec token CSRF et confirmation JavaScript
+    Utilisé dans les pages show et edit pour supprimer un matériel
+#}
+
+<form method="post" action="{{ path('app_materiel_delete', {'id': materiel.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce matériel ?');">
+    {# Token CSRF pour la sécurité #}
     <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ materiel.id) }}">
-    <button class="btn">Supprimer</button>
+    {# Bouton de suppression avec style d'alerte #}
+    <button class="px-6 py-3 rounded-lg font-bold bg-red-600 text-white hover:bg-red-700 transition-colors">Supprimer</button>
 </form>

@@ -1,205 +1,62 @@
+{# 
+    Template d'affichage de la liste des matériels
+    Affiche tous les matériels dans un tableau avec possibilité de voir, modifier et créer
+    Utilise Tailwind CSS pour le styling responsive
+#}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Liste des Matériels{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .materiel-container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 20px;
-        }
-        
-        .materiel-header {
-            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
-            border-radius: 20px;
-            padding: 30px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            text-align: center;
-        }
-        
-        .materiel-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #1a202c;
-            margin: 0 0 20px 0;
-        }
-        
-        .create-btn {
-            display: inline-block;
-            background-color: #339af0;
-            color: white;
-            text-decoration: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        
-        .create-btn:hover {
-            background-color: #1976d2;
-            color: white;
-        }
-        
-        .table-container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-            overflow-x: auto;
-        }
-        
-        .materiel-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 0;
-        }
-        
-        .materiel-table thead {
-            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
-        }
-        
-        .materiel-table th {
-            padding: 15px 12px;
-            text-align: left;
-            font-weight: bold;
-            color: #1a202c;
-            border: none;
-            font-size: 1rem;
-        }
-        
-        .materiel-table td {
-            padding: 15px 12px;
-            border-bottom: 1px solid #e9ecef;
-            vertical-align: middle;
-        }
-        
-        .materiel-table tbody tr:hover {
-            background-color: #f8f9fa;
-            transition: background 0.2s;
-        }
-        
-        .materiel-table tbody tr:last-child td {
-            border-bottom: none;
-        }
-        
-        .action-links {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .action-link {
-            padding: 6px 12px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        
-        .action-link.show {
-            background-color: #28a745;
-            color: white;
-        }
-        
-        .action-link.show:hover {
-            background-color: #218838;
-            color: white;
-        }
-        
-        .action-link.edit {
-            background-color: #ffc107;
-            color: #212529;
-        }
-        
-        .action-link.edit:hover {
-            background-color: #e0a800;
-            color: #212529;
-        }
-        
-        .no-records {
-            text-align: center;
-            padding: 40px;
-            color: #6c757d;
-            font-style: italic;
-        }
-        
-        .description-cell {
-            max-width: 200px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        
-        @media (max-width: 768px) {
-            .materiel-container {
-                margin: 20px auto;
-                padding: 10px;
-            }
-            
-            .materiel-title {
-                font-size: 2rem;
-            }
-            
-            .table-container {
-                padding: 15px;
-            }
-            
-            .materiel-table th,
-            .materiel-table td {
-                padding: 10px 8px;
-                font-size: 0.9rem;
-            }
-            
-            .action-links {
-                flex-direction: column;
-                gap: 5px;
-            }
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
-    <div class="materiel-container">
-        <div class="materiel-header">
-            <h1 class="materiel-title">Liste des Matériels</h1>
-            <a href="{{ path('app_materiel_new') }}" class="create-btn">Créer un nouveau matériel</a>
-        </div>
+    {# Conteneur principal avec sidebar offset #}
+    <div class="ml-20 min-h-screen bg-gray-50 p-5">
+        <div class="max-w-6xl mx-auto">
+            {# En-tête avec titre et bouton de création #}
+            <div class="bg-gradient-to-b from-blue-200 to-blue-300 rounded-3xl p-8 mb-8 shadow-lg text-center">
+                <h1 class="text-4xl font-bold text-gray-800 mb-5">Liste des Matériels</h1>
+                <a href="{{ path('app_materiel_new') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors">Créer un nouveau matériel</a>
+            </div>
 
-        <div class="table-container">
-            <table class="materiel-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Libellé</th>
-                        <th>Quantité</th>
-                        <th>Description</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for materiel in materiels %}
-                    <tr>
-                        <td>{{ materiel.id }}</td>
-                        <td>{{ materiel.libelle }}</td>
-                        <td>{{ materiel.quantite }}</td>
-                        <td class="description-cell" title="{{ materiel.description }}">{{ materiel.description }}</td>
-                        <td>
-                            <div class="action-links">
-                                <a href="{{ path('app_materiel_show', {'id': materiel.id}) }}" class="action-link show">Voir</a>
-                                <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}" class="action-link edit">Modifier</a>
-                            </div>
-                        </td>
-                    </tr>
-                {% else %}
-                    <tr>
-                        <td colspan="5" class="no-records">Aucun matériel trouvé</td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+            {# Tableau des matériels #}
+            <div class="bg-white rounded-3xl p-8 shadow-lg overflow-x-auto">
+                <table class="w-full border-collapse">
+                    {# En-têtes du tableau #}
+                    <thead>
+                        <tr class="bg-gradient-to-b from-blue-200 to-blue-300">
+                            <th class="px-4 py-4 text-left font-bold text-gray-800 text-base border-0">ID</th>
+                            <th class="px-4 py-4 text-left font-bold text-gray-800 text-base border-0">Libellé</th>
+                            <th class="px-4 py-4 text-left font-bold text-gray-800 text-base border-0">Quantité</th>
+                            <th class="px-4 py-4 text-left font-bold text-gray-800 text-base border-0">Description</th>
+                            <th class="px-4 py-4 text-left font-bold text-gray-800 text-base border-0">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {# Boucle sur tous les matériels #}
+                    {% for materiel in materiels %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-4 py-4 border-b border-gray-200 align-middle">{{ materiel.id }}</td>
+                            <td class="px-4 py-4 border-b border-gray-200 align-middle">{{ materiel.libelle }}</td>
+                            <td class="px-4 py-4 border-b border-gray-200 align-middle">{{ materiel.quantite }}</td>
+                            {# Description tronquée avec tooltip au survol #}
+                            <td class="px-4 py-4 border-b border-gray-200 align-middle max-w-xs overflow-hidden text-ellipsis whitespace-nowrap" title="{{ materiel.description }}">{{ materiel.description }}</td>
+                            <td class="px-4 py-4 border-b border-gray-200 align-middle">
+                                {# Boutons d'action pour chaque matériel #}
+                                <div class="flex gap-2">
+                                    <a href="{{ path('app_materiel_show', {'id': materiel.id}) }}" class="px-3 py-1.5 rounded-md text-sm font-medium bg-green-600 text-white hover:bg-green-700 transition-colors">Voir</a>
+                                    <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}" class="px-3 py-1.5 rounded-md text-sm font-medium bg-yellow-500 text-gray-800 hover:bg-yellow-600 transition-colors">Modifier</a>
+                                </div>
+                            </td>
+                        </tr>
+                    {% else %}
+                        {# Message affiché quand aucun matériel n'est trouvé #}
+                        <tr>
+                            <td colspan="5" class="text-center py-10 text-gray-500 italic">Aucun matériel trouvé</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 {% endblock %}
