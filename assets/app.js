@@ -8,3 +8,6 @@
 
 // any CSS you import will output into a single css file (app.css in this case)
 import './styles/app.css';
+
+// Import Boxicons v3
+import 'boxicons/css/boxicons.min.css';

@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\Material;
+use App\Entity\Materiel;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Material>
+ * @extends ServiceEntityRepository<Materiel>
  */
-class MaterialRepository extends ServiceEntityRepository
+class MaterielRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Material::class);
+        parent::__construct($registry, Materiel::class);
     }
 
 //    /**
-//     * @return Material[] Returns an array of Material objects
+//     * @return Materiel[] Returns an array of Materiel objects
 //     */
 //    public function findByExampleField($value): array
 //    {
@@ -31,7 +31,7 @@ class MaterialRepository extends ServiceEntityRepository
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Material
+//    public function findOneBySomeField($value): ?Materiel
 //    {
 //        return $this->createQueryBuilder('m')
 //            ->andWhere('m.exampleField = :val')
