@@ -6,7 +6,6 @@
 /public/bundles/
 /var/
 /vendor/
-/composer.lock
 ###< symfony/framework-bundle ###
 
 ###> phpunit/phpunit ###
@@ -20,3 +19,4 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+composer.lock
