@@ -1,0 +1,67 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Intervention index
+{% endblock %}
+
+{% block body %}
+	<h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Liste des Interventions</h1>
+
+	<div class="bg-blue-50 rounded-lg p-6 shadow-lg">
+		<div class="overflow-x-auto">
+			<table class="w-full bg-white rounded-lg overflow-hidden">
+				<thead class="bg-blue-500 text-white">
+					<tr>
+
+						<th class="px-4 py-3 text-left text-sm font-semibold">Libelle</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold">Date début</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold">Date fin</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold">Adresse</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold">Ville</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold">Code postal</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold">Infos</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold">Status</th>
+						<th class="px-4 py-3 text-left text-sm font-semibold">Actions</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-gray-200">
+					{% for intervention in interventions %}
+						<tr class="hover:bg-blue-50 transition-colors">
+							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.libelle }}</td>
+							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.dateDebut ? intervention.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.dateFin ? intervention.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.adresse }}</td>
+							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.ville }}</td>
+							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.codePostal }}</td>
+							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.infos }}</td>
+							<td class="px-4 py-3 text-sm">
+								<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+									{{ intervention.status }}
+								</span>
+							</td>
+							<td class="px-4 py-3 text-sm">
+								<div class="flex gap-2">
+									<a href="{{ path('app_intervention_show', {'id': intervention.id}) }}" class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-xs font-medium">
+										Voir
+									</a>
+									<a href="{{ path('app_intervention_edit', {'id': intervention.id}) }}" class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-xs font-medium">
+										Modifier
+									</a>
+								</div>
+							</td>
+						</tr>
+					{% else %}
+						<tr>
+							<td colspan="10" class="px-4 py-8 text-center text-gray-500 ml-5">
+								Aucune intervention trouvée
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+		<div class="mt-6">
+			<a href="{{ path('app_intervention_new') }}" class="mt-20 text-s font-bold text-blue-600 mb-6 text-center">Créer une Intervention</a>
+		</div>
+	</div>
+
+{% endblock %}
