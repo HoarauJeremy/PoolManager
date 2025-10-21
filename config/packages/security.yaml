@@ -50,8 +50,8 @@ security:
         - { path: ^/logout, roles: IS_AUTHENTICATED_FULLY }
         
         # Section admin réservée aux administrateurs
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/admin, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        # - { path: ^/admin, roles: IS_AUTHENTICATED_FULLY }
         
         # Toutes les autres routes nécessitent d'être connecté
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
