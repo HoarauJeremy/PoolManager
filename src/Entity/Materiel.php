@@ -2,14 +2,14 @@
 
 namespace App\Entity;
 
-use App\Repository\MaterialRepository;
+use App\Repository\MaterielRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: MaterialRepository::class)]
-class Material
+#[ORM\Entity(repositoryClass: MaterielRepository::class)]
+class Materiel
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
