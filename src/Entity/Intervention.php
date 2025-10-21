@@ -237,7 +237,7 @@ class Intervention
     public function removeMateriel(Material $materiel): static
     {
         $this->materiel->removeElement($materiel);
-
+ 
         return $this;
     }
 
