@@ -4,36 +4,67 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    {# Si vous utilisez Tailwind via CDN, ajoutez le lien ici #}
+    {# <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"> #}
 {% endblock %}
 
 {% block body %}
-    <div class="clients-wrapper">
-        <h1 style="text-align:left; margin-bottom:14px;">Liste des clients</h1>
-        
-        {% if clients|length > 0 %}
-            <div class="cards-grid">
-            {% for client in clients %}
-                <div class="client-card">
-                    <div class="client-title">{{ client.nom }} {{ client.prenom }}</div>
-                    <ul class="client-info-list">
-                        <li><strong>Email :</strong> {{ client.email }}</li>
-                        <li><strong>Adresse :</strong> {{ client.adresse }}</li>
-                        <li><strong>Ville :</strong> {{ client.ville }}</li>
-                        <li><strong>Code postal :</strong> {{ client.codePostal }}</li>
-                        <li><strong>Tél. fixe :</strong> {{ client.telFixe ?? '-' }}</li>
-                        <li><strong>Tél. GSM :</strong> {{ client.telGsm ?? '-' }}</li>
-                    </ul>
-                    <div class="card-actions">
-                        <a href="{{ path('app_client_show', {'id': client.id}) }}">Voir</a>
-                        <a href="{{ path('app_client_edit', {'id': client.id}) }}">Éditer</a>
-                    </div>
+    {# Conteneur principal avec fond bleu clair et espacement #}
+    <div class="min-h-screen bg-blue-50 py-6 px-4 sm:px-6 lg:px-8">
+        {# Conteneur limité à 1200px de large, centré avec espacement #}
+        <div class="mx-auto max-w-6xl">
+            {# Titre de la page #}
+            <h1 class="mb-3.5 text-left text-2xl font-bold text-blue-800">Liste des clients</h1>
+
+            {# Vérification s'il y a des clients #}
+            {% if clients|length > 0 %}
+                {# Grille responsive de cartes clients #}
+                <div class="mt-8 grid grid-cols-1 gap-7 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {# Boucle sur chaque client #}
+                    {% for client in clients %}
+                        {# Carte client avec effet hover #}
+                        <div class="rounded-2xl border border-blue-300 bg-gradient-to-b from-blue-200 to-blue-300 p-6 shadow-sm transition-all hover:shadow-lg hover:ring-2 hover:ring-blue-500">
+                            {# Titre avec nom du client #}
+                            <h2 class="mb-2 text-xl font-semibold text-blue-700">{{ client.nom }} {{ client.prenom }}</h2>
+
+                            {# Liste d'informations client #}
+                            <ul class="mb-4 space-y-1 text-gray-700">
+                                <li><strong>Email :</strong> {{ client.email }}</li>
+                                <li><strong>Adresse :</strong> {{ client.adresse }}</li>
+                                <li><strong>Ville :</strong> {{ client.ville }}</li>
+                                <li><strong>Code postal :</strong> {{ client.codePostal }}</li>
+                                <li><strong>Tél. fixe :</strong> {{ client.telFixe ?? '-' }}</li>
+                                <li><strong>Tél. GSM :</strong> {{ client.telGsm ?? '-' }}</li>
+                            </ul>
+
+                            {# Section des actions (lien Voir) #}
+                            <div class="mt-auto">
+                                <a
+                                    href="{{ path('app_client_edit', {'id': client.id}) }}"
+                                    class="text-blue-600 hover:text-blue-800 hover:underline"
+                                >
+                                    Voir
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
-            {% endfor %}
+            {% else %}
+                {# Message quand aucun client n'est trouvé #}
+                <div class="mx-auto mt-10 rounded-2xl bg-blue-200 p-8 text-center text-xl text-blue-700">
+                    Aucun client trouvé.
+                </div>
+            {% endif %}
+
+            {# Bouton pour ajouter un nouveau client #}
+            <div class="mt-10 text-center">
+                <a
+                    href="{{ path('app_client_new') }}"
+                    class="inline-block rounded-xl bg-blue-600 px-6 py-3 text-lg font-semibold text-white shadow-sm transition-colors hover:bg-blue-700"
+                >
+                    Ajouter un client
+                </a>
             </div>
-        {% else %}
-            <div class="no-records">Aucun client trouvé.</div>
-        {% endif %}
-        <a class="create-new-btn" href="{{ path('app_client_new') }}">Ajouter un client</a>
+        </div>
     </div>
 {% endblock %}

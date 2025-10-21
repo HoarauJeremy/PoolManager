@@ -4,77 +4,204 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <style>
-        .client-form-container {
-            max-width: 400px;
-            margin: 40px auto;
-            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
-            border-radius: 20px;
-            padding: 32px 24px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-        .client-form-title {
-            text-align: center;
-            font-size: 2rem;
-            font-weight: bold;
-            margin-bottom: 28px;
-            color: #1a202c;
-        }
-        form[name="client"] .form-group {
-            margin-bottom: 18px;
-        }
-        form[name="client"] input {
-            width: 100%;
-            padding: 12px 14px;
-            border: none;
-            border-radius: 10px;
-            outline: none;
-            font-size: 1rem;
-            background: #fff;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-            margin-bottom: 6px;
-            transition: box-shadow 0.2s;
-        }
-        form[name="client"] input:focus {
-            box-shadow: 0 0 0 2px #339af0;
-        }
-        form[name="client"] button,
-        .client-form-btn {
-            width: 100%;
-            padding: 12px 0;
-            background-color: #339af0;
-            border: none;
-            border-radius: 10px;
-            font-size: 1rem;
-            color: #fff;
-            margin-top: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-        form[name="client"] button:hover,
-        .client-form-btn:hover {
-            background-color: #1976d2;
-        }
-        .back-link {
-            display: block;
-            margin: 18px auto 0 auto;
-            text-align: center;
-            font-size: 0.97rem;
-            color: #339af0;
-            text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
-            color: #1976d2;
-        }
-    </style>
+    {# Utilisation de Tailwind via CDN - meilleure pratique est de l'installer localement #}
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
-    <div class="client-form-container">
-        <div class="client-form-title">Ajouter un client</div>
-        {{ include('client/_form.html.twig') }}
-        <a class="back-link" href="{{ path('app_client_index') }}">⟵ Retour à la liste</a>
+    {# Conteneur principal avec style responsive et accessibilité #}
+    <div class="mx-auto mt-10 max-w-md rounded-2xl bg-blue-300 p-8 shadow-lg"
+         role="form"
+         aria-label="Formulaire d'ajout de client">
+        {# Titre du formulaire avec classe responsive #}
+        <h1 class="mb-7 text-center text-2xl font-bold text-gray-800">Ajouter un client</h1>
+
+        {# Début du formulaire avec classe pour accessibilité #}
+        {{ form_start(form, {'attr': {'class': 'space-y-4'}}) }}
+
+            {# Champ Nom - structure optimisée avec gestion d'erreur #}
+            <div class="space-y-1">
+                {{ form_label(form.nom, null, {
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-gray-700',
+                        'for': 'client_nom'
+                    }
+                }) }}
+                {{ form_widget(form.nom, {
+                    'attr': {
+                        'class': 'w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-base shadow-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                        'id': 'client_nom',
+                        'aria-describedby': 'client_nom_error'
+                    }
+                }) }}
+                <div class="text-sm text-red-600" id="client_nom_error">
+                    {{ form_errors(form.nom) }}
+                </div>
+            </div>
+
+            {# Champ Prénom - même structure que Nom pour cohérence #}
+            <div class="space-y-1">
+                {{ form_label(form.prenom, null, {
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-gray-700',
+                        'for': 'client_prenom'
+                    }
+                }) }}
+                {{ form_widget(form.prenom, {
+                    'attr': {
+                        'class': 'w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-base shadow-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                        'id': 'client_prenom',
+                        'aria-describedby': 'client_prenom_error'
+                    }
+                }) }}
+                <div class="text-sm text-red-600" id="client_prenom_error">
+                    {{ form_errors(form.prenom) }}
+                </div>
+            </div>
+
+            {# Champ Email avec type email pour validation native #}
+            <div class="space-y-1">
+                {{ form_label(form.email, null, {
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-gray-700',
+                        'for': 'client_email'
+                    }
+                }) }}
+                {{ form_widget(form.email, {
+                    'attr': {
+                        'class': 'w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-base shadow-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                        'id': 'client_email',
+                        'type': 'email',
+                        'aria-describedby': 'client_email_error',
+                        'autocomplete': 'email'
+                    }
+                }) }}
+                <div class="text-sm text-red-600" id="client_email_error">
+                    {{ form_errors(form.email) }}
+                </div>
+            </div>
+
+            {# Champ Adresse avec autocomplete #}
+            <div class="space-y-1">
+                {{ form_label(form.adresse, null, {
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-gray-700',
+                        'for': 'client_adresse'
+                    }
+                }) }}
+                {{ form_widget(form.adresse, {
+                    'attr': {
+                        'class': 'w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-base shadow-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                        'id': 'client_adresse',
+                        'aria-describedby': 'client_adresse_error',
+                        'autocomplete': 'street-address'
+                    }
+                }) }}
+                <div class="text-sm text-red-600" id="client_adresse_error">
+                    {{ form_errors(form.adresse) }}
+                </div>
+            </div>
+
+            {# Champ Ville avec autocomplete #}
+            <div class="space-y-1">
+                {{ form_label(form.ville, null, {
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-gray-700',
+                        'for': 'client_ville'
+                    }
+                }) }}
+                {{ form_widget(form.ville, {
+                    'attr': {
+                        'class': 'w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-base shadow-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                        'id': 'client_ville',
+                        'aria-describedby': 'client_ville_error',
+                        'autocomplete': 'address-level2'
+                    }
+                }) }}
+                <div class="text-sm text-red-600" id="client_ville_error">
+                    {{ form_errors(form.ville) }}
+                </div>
+            </div>
+
+            {# Champ Code Postal avec input type approprié #}
+            <div class="space-y-1">
+                {{ form_label(form.code_postal, null, {
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-gray-700',
+                        'for': 'client_code_postal'
+                    }
+                }) }}
+                {{ form_widget(form.code_postal, {
+                    'attr': {
+                        'class': 'w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-base shadow-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                        'id': 'client_code_postal',
+                        'aria-describedby': 'client_code_postal_error',
+                        'autocomplete': 'postal-code',
+                        'pattern': '[0-9]{5}'
+                    }
+                }) }}
+                <div class="text-sm text-red-600" id="client_code_postal_error">
+                    {{ form_errors(form.code_postal) }}
+                </div>
+            </div>
+
+            {# Champ Téléphone Fixe avec input type tel #}
+            <div class="space-y-1">
+                {{ form_label(form.tel_fixe, null, {
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-gray-700',
+                        'for': 'client_tel_fixe'
+                    }
+                }) }}
+                {{ form_widget(form.tel_fixe, {
+                    'attr': {
+                        'class': 'w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-base shadow-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                        'id': 'client_tel_fixe',
+                        'type': 'tel',
+                        'aria-describedby': 'client_tel_fixe_error',
+                        'autocomplete': 'tel'
+                    }
+                }) }}
+                <div class="text-sm text-red-600" id="client_tel_fixe_error">
+                    {{ form_errors(form.tel_fixe) }}
+                </div>
+            </div>
+
+            {# Champ Téléphone GSM avec input type tel #}
+            <div class="space-y-1">
+                {{ form_label(form.tel_gsm, null, {
+                    'label_attr': {
+                        'class': 'block text-sm font-medium text-gray-700',
+                        'for': 'client_tel_gsm'
+                    }
+                }) }}
+                {{ form_widget(form.tel_gsm, {
+                    'attr': {
+                        'class': 'w-full rounded-lg border border-gray-300 bg-white px-3.5 py-3 text-base shadow-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                        'id': 'client_tel_gsm',
+                        'type': 'tel',
+                        'aria-describedby': 'client_tel_gsm_error',
+                        'autocomplete': 'tel'
+                    }
+                }) }}
+                <div class="text-sm text-red-600" id="client_tel_gsm_error">
+                    {{ form_errors(form.tel_gsm) }}
+                </div>
+            </div>
+
+            {# Bouton de soumission avec states #}
+            <button type="submit"
+                    class="mt-5 w-full rounded-lg bg-blue-500 px-4 py-3 text-base font-bold text-white shadow transition-colors duration-200 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:bg-blue-800">
+                Ajouter
+            </button>
+
+        {{ form_end(form) }}
+
+        {# Lien de retour avec style cohérent #}
+        <a href="{{ path('app_client_index') }}"
+           class="mt-4 block text-center text-sm text-blue-500 hover:text-blue-700 hover:underline focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+           aria-label="Retour à la liste des clients">
+            ⟵ Retour à la liste
+        </a>
     </div>
 {% endblock %}
