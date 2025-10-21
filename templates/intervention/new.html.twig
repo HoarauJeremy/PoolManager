@@ -1,11 +1,25 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Intervention{% endblock %}
+{% block title %}Nouvelle Intervention
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Intervention</h1>
+	<div class="min-h-screen bg-blue-50 py-8 px-4">
+		<div class="max-w-3xl mx-auto">
+			<div class="bg-blue-200 rounded-lg shadow-lg p-8 w-3xl">
+				<h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">
+					Créer une nouvelle intervention
+				</h1>
 
-    {{ include('intervention/_form.html.twig') }}
+				{{ include('intervention/_form.html.twig') }}
 
-    <a href="{{ path('app_intervention_index') }}">back to list</a>
+				<div class="mt-6">
+					<button class="w-full btn flex justify-center items-center px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-gray-600 transition-colors ">{{ button_label|default('Envoyer') }}</button>
+					<a href="{{ path('app_intervention_index') }}" class="mt-20 text-s font-bold text-blue-600 mb-6 text-center">
+						← Retour à la liste
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
