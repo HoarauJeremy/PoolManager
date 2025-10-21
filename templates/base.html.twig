@@ -1,72 +1,107 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-            <style>
-                .sidebar {
-                    background-color: #374152;
-                }
-            </style>
-        {% endblock %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: #f3f4f6;
+            }
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
-        {% endblock %} 
-    </head>
-    <body>
-    <!-- Sidebar -->
-    <div class="sidebar w-20 flex flex-col items-center py-8 fixed h-screen z-10">
-        <!-- Navigation Icons -->
-        <div class="flex flex-col items-center space-y-6">
-            <!-- Logo Dashboard -->
-            <div class="sidebar-icon active">
-                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
-                </svg>
-            </div>
+            .sidebar {
+                background-color: #374152;
+            }
 
-            <div>
-                <a href="{{ path("app_type_intervention_index") }}">
-                    <i class='bx  bx-building-house text-gray-400 text-3xl'></i>
-                </a>
-            </div>
+            .sidebar-icon {
+                width: 3rem;
+                height: 3rem;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                border-radius: 0.5rem;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
 
-            <!-- Icône Interventions/Jobs -->
-            <div>
-                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                </svg>
-            </div>
+            .sidebar-icon.active {
+                background-color: #b91c1c; /* red-700 */
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            }
 
-            <!-- Icône Clients -->
-            <div>
-                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                </svg>
-            </div>
+            .sidebar-icon:not(.active):hover {
+                background-color: #374151; /* gray-700 */
+            }
 
-            <!-- Icône Calendrier -->
-            <div>
-                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                </svg>
-            </div>
-        </div>
+            .main-content {
+                margin-left: 5rem;
+                padding: 2rem;
+                min-height: 100vh;
+                width: calc(100% - 5rem);
+            }
+        </style>
+    {% endblock %}
 
-        <!-- Icône Paramètres (en bas) -->
-        <div class="mt-auto">
-            <div>
-                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                </svg>
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+    {% endblock %}
+</head>
+<body>
+<!-- Sidebar -->
+<div class="sidebar w-20 flex flex-col items-center py-8 fixed h-screen z-10">
+    <!-- Navigation Icons -->
+    <div class="flex flex-col items-center space-y-6">
+        <!-- Logo Dashboard -->
+        <a href="{{ path('app_dashboard') }}">
+            <div class="sidebar-icon {% if app.request.attributes.get('_route') == 'app_dashboard' %}active{% endif %}">
+                <i class='bx bxs-dashboard text-2xl {% if app.request.attributes.get('_route') == 'app_dashboard' %}text-white{% else %}text-gray-400{% endif %}'></i>
             </div>
-        </div>
+        </a>
+
+        <!-- Icône Types d'intervention -->
+        <a href="{{ path('app_type_intervention_index') }}">
+            <div class="sidebar-icon {% if app.request.attributes.get('_route') starts with 'app_type_intervention' %}active{% endif %}">
+                <i class='bx bx-building-house text-2xl {% if app.request.attributes.get('_route') starts with 'app_type_intervention' %}text-white{% else %}text-gray-400{% endif %}'></i>
+            </div>
+        </a>
+
+        <!-- Icône Interventions/Jobs -->
+        <a href="{{ path('app_intervention_index') }}">
+            <div class="sidebar-icon {% if app.request.attributes.get('_route') starts with 'app_intervention' %}active{% endif %}">
+                <i class='bx bx-briefcase text-2xl {% if app.request.attributes.get('_route') starts with 'app_intervention' %}text-white{% else %}text-gray-400{% endif %}'></i>
+            </div>
+        </a>
+
+        <!-- Icône Clients -->
+        <a href="{{ path('app_client_index') }}">
+            <div class="sidebar-icon {% if app.request.attributes.get('_route') starts with 'app_client' %}active{% endif %}">
+                <i class='bx bx-group text-2xl {% if app.request.attributes.get('_route') starts with 'app_client' %}text-white{% else %}text-gray-400{% endif %}'></i>
+            </div>
+        </a>
+
+        <!-- Icône Calendrier -->
+        <a href="{{ path('app_dashboard') }}">
+            <div class="sidebar-icon">
+                <i class='bx bx-calendar text-2xl text-gray-400'></i>
+            </div>
+        </a>
     </div>
-        {% block body %}{% endblock %}
-    </body>
+
+    <!-- Icône Paramètres (en bas) -->
+    <div class="mt-auto">
+        <a href="#">
+            <div class="sidebar-icon">
+                <i class='bx bx-cog text-2xl text-gray-400'></i>
+            </div>
+        </a>
+    </div>
+</div>
+<div class="main-content">
+    {% block body %}{% endblock %}
+</div>
+</body>
 </html>
