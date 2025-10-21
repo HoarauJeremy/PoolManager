@@ -1,87 +1,175 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Ajouter un client{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/client/edit.css') }}">
-{% endblock %}
+{% block title %}Profil client{% endblock %}
 
 {% block body %}
-    <div class="client-form-container">
-        <div class="client-profile-section">
-            <div class="client-form-title">Client Profile</div>
+    {# -- Arrière-plan : léger dégradé plein écran pour un rendu doux et moderne -- #}
+    <section class="min-h-screen bg-gradient-to-b from-sky-100 via-white to-sky-100 py-16">
+        <div class="px-4">
+            {# -- Conteneur principal centré avec largeur max contrôlée -- #}
+            <div class="mx-auto flex max-w-6xl flex-col gap-10">
+                <header class="text-center">
+                    <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                        Client Profile
+                    </h1>
+                    <p class="mt-2 text-base text-slate-500">
+                        Gérez les informations client et consultez l’historique des interventions d’un seul regard.
+                    </p>
+                </header>
 
-            <img src="{{ asset('images/default-avatar.png') }}" alt="Client avatar" class="client-avatar">
+                {# -- Grille responsives : carte formulaire (col-span-2) + carte historique (col-span-1) -- #}
+                <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                    {# -- Carte formulaire : fond translucide, flou léger, bords arrondis -- #}
+                    <div class="lg:col-span-2 rounded-3xl bg-white/80 p-10 shadow-xl backdrop-blur-sm">
+                        {# -- Bandeau identitaire du client (avatar + résumé) -- #}
+                        <div class="mb-10 flex flex-col gap-6 rounded-2xl bg-white/70 p-6 shadow-inner sm:flex-row sm:items-center">
+                            <img
+                                src="{{ asset('images/default-avatar.png') }}"
+                                alt="Avatar du client"
+                                class="h-20 w-20 shrink-0 rounded-full border border-sky-200 object-cover shadow-md"
+                            >
+                            <div>
+                                <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                                    Client
+                                </p>
+                                <p class="text-2xl font-bold text-slate-900">
+                                    {{ (form.prenom.vars.value ?? '') ~ ' ' ~ (form.nom.vars.value ?? '') | trim ?: 'Nom du client' }}
+                                </p>
+                                <p class="text-sm font-medium text-slate-500">
+                                    {{ form.email.vars.value ?? 'client@example.com' }}
+                                </p>
+                            </div>
+                        </div>
 
-            <div class="client-info-grid">
-                <div class="form-group">
-                    <label for="client_name">Nom</label>
-                    {{ form_widget(form.nom) }}
-                </div>
-                <div class="form-group">
-                    <label for="client_email">Prenom</label>
-                    {{ form_widget(form.prenom) }}
-                </div>
-                <div class="form-group">
-                    <label for="client_phone">Email</label>
-                    {{ form_widget(form.email) }}
-                </div>
-                <div class="form-group">
-                    <label for="client_location">Adresse</label>
-                    {{ form_widget(form.adresse) }}
-                </div>
-                <div class="form-group">
-                    <label for="client_poolType">Ville</label>
-                    {{ form_widget(form.ville) }}
-                </div>
-                <div class="form-group">
-                    <label for="client_maintenanceFrequency">Code postal</label>
-                    {{ form_widget(form.code_postal) }}
-                </div>
-                <div class="form-group">
-                    <label for="client_serviceAddress">Telephone fixe</label>
-                    {{ form_widget(form.tel_fixe) }}
-                </div>
-                <div class="form-group">
-                    <label for="client_emergencyContact">Telehone gsm</label>
-                    {{ form_widget(form.tel_gsm) }}
-                </div>
-            </div>
+                        {# -- Variables Twig pour centraliser les classes Tailwind des champs -- #}
+                        {% set field_row_classes = 'space-y-1' %}
+                        {% set label_classes = 'block text-sm font-semibold text-slate-600' %}
+                        {% set input_classes = 'w-full rounded-2xl border border-transparent bg-white px-4 py-3 text-base font-medium text-slate-900 shadow-sm ring-1 ring-sky-200 transition focus:border-transparent focus:ring-2 focus:ring-sky-500 focus:outline-none' %}
+                        {% set error_classes = 'text-sm font-medium text-red-600' %}
+                        {% set submit_classes = 'inline-flex w-full justify-center rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 px-6 py-3 text-base font-semibold text-white shadow-lg transition hover:from-sky-600 hover:to-blue-700 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 active:translate-y-px sm:w-auto' %}
 
-            <div class="client-actions">
-                <button type="submit" class="save-btn">Ajouter un Client</button>
+                        {# -- Formulaire Symfony : chaque champ stylé avec Tailwind + gestion des erreurs -- #}
+                        {{ form_start(form, {
+                            attr: {
+                                class: 'space-y-8'
+                            }
+                        }) }}
+
+                            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                                {{ form_row(form.nom, {
+                                    label: 'Nom',
+                                    row_attr: { class: field_row_classes },
+                                    label_attr: { class: label_classes },
+                                    attr: { class: input_classes },
+                                    error_attr: { class: error_classes }
+                                }) }}
+
+                                {{ form_row(form.prenom, {
+                                    label: 'Prénom',
+                                    row_attr: { class: field_row_classes },
+                                    label_attr: { class: label_classes },
+                                    attr: { class: input_classes },
+                                    error_attr: { class: error_classes }
+                                }) }}
+
+                                {{ form_row(form.email, {
+                                    label: 'Email',
+                                    row_attr: { class: field_row_classes },
+                                    label_attr: { class: label_classes },
+                                    attr: { class: input_classes ~ ' lowercase' },
+                                    error_attr: { class: error_classes }
+                                }) }}
+
+                                {{ form_row(form.adresse, {
+                                    label: 'Adresse',
+                                    row_attr: { class: field_row_classes },
+                                    label_attr: { class: label_classes },
+                                    attr: { class: input_classes },
+                                    error_attr: { class: error_classes }
+                                }) }}
+
+                                {{ form_row(form.ville, {
+                                    label: 'Ville',
+                                    row_attr: { class: field_row_classes },
+                                    label_attr: { class: label_classes },
+                                    attr: { class: input_classes ~ ' capitalize' },
+                                    error_attr: { class: error_classes }
+                                }) }}
+
+                                {{ form_row(form.code_postal, {
+                                    label: 'Code postal',
+                                    row_attr: { class: field_row_classes },
+                                    label_attr: { class: label_classes },
+                                    attr: { class: input_classes ~ ' tracking-[0.15em] uppercase' },
+                                    error_attr: { class: error_classes }
+                                }) }}
+
+                                {{ form_row(form.tel_fixe, {
+                                    label: 'Téléphone fixe',
+                                    row_attr: { class: field_row_classes },
+                                    label_attr: { class: label_classes },
+                                    attr: { class: input_classes },
+                                    error_attr: { class: error_classes }
+                                }) }}
+
+                                {{ form_row(form.tel_gsm, {
+                                    label: 'Téléphone mobile',
+                                    row_attr: { class: field_row_classes },
+                                    label_attr: { class: label_classes },
+                                    attr: { class: input_classes },
+                                    error_attr: { class: error_classes }
+                                }) }}
+                            </div>
+
+                            {# -- Rendu des champs restants (ex. token CSRF) pour éviter les oublis -- #}
+                            {{ form_rest(form) }}
+
+                            {# -- Bouton principal : placé après les inputs pour une hiérarchie claire -- #}
+                            <div class="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
+                                <button type="submit" class="{{ submit_classes }}">
+                                    Mettre à jour le client
+                                </button>
+                                <a href="{{ path('app_client_index') }}"
+                                   class="inline-flex items-center text-sm font-semibold text-sky-700 transition hover:-translate-y-0.5 hover:text-sky-900">
+                                    ⟵ Retour à la liste
+                                </a>
+                            </div>
+                        {{ form_end(form, { render_rest: false }) }}
+                    </div>
+
+                    {# -- Carte historique : contraste de couleur, typographie claire et lisible -- #}
+                    <aside class="rounded-3xl bg-gradient-to-br from-sky-500 via-sky-600 to-blue-700 p-8 text-white shadow-xl">
+                        <h2 class="mb-6 text-2xl font-semibold tracking-wide">Historique</h2>
+
+                        {# -- Liste des interventions : chaque entrée possède son bloc distinct -- #}
+                        <div class="space-y-4">
+                            <article class="rounded-2xl bg-white/15 p-5 shadow-sm transition hover:bg-white/20">
+                                <p class="text-lg font-semibold">Pool Cleaning - Downtown</p>
+                                <p class="text-sm font-medium text-sky-100">Technicien : Alex Johnson</p>
+                                <p class="mt-2 text-xs uppercase tracking-wide text-sky-100/80">Réalisé le 15 mai 2023</p>
+                            </article>
+
+                            <article class="rounded-2xl bg-white/15 p-5 shadow-sm transition hover:bg-white/20">
+                                <p class="text-lg font-semibold">Chemical Check - Northside</p>
+                                <p class="text-sm font-medium text-sky-100">Technicien : Emily Davis</p>
+                                <p class="mt-2 text-xs uppercase tracking-wide text-sky-100/80">Réalisé le 02 juin 2023</p>
+                            </article>
+
+                            <article class="rounded-2xl bg-white/15 p-5 shadow-sm transition hover:bg-white/20">
+                                <p class="text-lg font-semibold">Pump Repair - Riverside</p>
+                                <p class="text-sm font-medium text-sky-100">Technicien : Michael Brown</p>
+                                <p class="mt-2 text-xs uppercase tracking-wide text-sky-100/80">Réalisé le 15 juin 2023</p>
+                            </article>
+                        </div>
+
+                        {# -- Lien secondaire (facultatif) pour compléter la section -- #}
+                        <a href="#"
+                           class="mt-8 inline-flex items-center text-sm font-semibold text-white/90 underline-offset-4 transition hover:text-white hover:underline">
+                            Voir toutes les interventions
+                        </a>
+                    </aside>
+                </div>
             </div>
         </div>
-
-        <div class="client-history-section">
-            <div class="history-title">Historique</div>
-
-            <div class="history-item">
-                <div>
-                    <div class="service-name">Pool Cleaning - Downtown</div>
-                    <div class="technician">Technician: John Smith</div>
-                </div>
-                <div class="service-date">2023-05-15</div>
-            </div>
-
-            <div class="history-item">
-                <div>
-                    <div class="service-name">Chemical Check - Northside</div>
-                    <div class="technician">Technician: Jane Doe</div>
-                </div>
-                <div class="service-date">2023-06-02</div>
-            </div>
-
-            <div class="history-item">
-                <div>
-                    <div class="service-name">Pump Repair - Riverside</div>
-                    <div class="technician">Technician: Michael Brown</div>
-                </div>
-                <div class="service-date">2023-06-15</div>
-            </div>
-        </div>
-    </div>
-
-    <a class="back-link" href="{{ path('app_client_index') }}">⟵ Retour à la liste</a>
+    </section>
 {% endblock %}
