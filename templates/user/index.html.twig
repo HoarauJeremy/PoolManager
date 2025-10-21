@@ -1,0 +1,190 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des utilisateurs{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .users-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.05);
+        }
+        .users-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .users-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin: 0;
+        }
+        .users-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        .users-table thead th {
+            background-color: #f8fafc;
+            color: #4a5568;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 16px 20px;
+            border: none;
+            text-align: left;
+        }
+        .users-table tbody tr {
+            background: #fff;
+            transition: all 0.2s ease;
+            border-radius: 8px;
+        }
+        .users-table tbody tr:hover {
+            background-color: #f8fafc;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .users-table tbody td {
+            padding: 16px 20px;
+            border-bottom: 1px solid #edf2f7;
+            vertical-align: middle;
+            color: #4a5568;
+        }
+        .users-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        .user-email {
+            color: #2d3748;
+            font-weight: 500;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: #ebf8ff;
+            color: #2b6cb0;
+            margin-right: 6px;
+            margin-bottom: 6px;
+        }
+        .role-badge.role-admin {
+            background-color: #fff5f5;
+            color: #c53030;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .btn-view, .btn-edit {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        .btn-view {
+            background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%);
+            color: white;
+        }
+        .btn-view:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px rgba(49, 130, 206, 0.2);
+        }
+        .btn-edit {
+            background: #edf2f7;
+            color: #4a5568;
+        }
+        .btn-edit:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+        .btn-view i, .btn-edit i {
+            margin-right: 6px;
+            font-size: 0.9em;
+        }
+        .no-users {
+            text-align: center;
+            padding: 40px 20px;
+            color: #a0aec0;
+            font-style: italic;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+        .user-id {
+            color: #a0aec0;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="users-container">
+        <div class="users-header">
+            <h1 class="users-title">Gestion des utilisateurs</h1>
+            <a href="{{ path('app_register') }}" class="btn-view">
+                <i class="fas fa-plus"></i> Nouvel utilisateur
+            </a>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Utilisateur</th>
+                        <th>Rôles</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for user in users %}
+                    <tr>
+                        <td class="user-id">#{{ user.id }}</td>
+                        <td>
+                            <div class="user-email">{{ user.email }}</div>
+                            {% if user.nom is defined and user.prenom is defined %}
+                                <small class="text-muted">{{ user.prenom }} {{ user.nom }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for role in user.roles %}
+                                <span class="role-badge {{ role == 'ROLE_ADMIN' ? 'role-admin' : '' }}">
+                                    {{ role|replace({'ROLE_': ''})|lower|capitalize }}
+                                </span>
+                            {% endfor %}
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ path('app_user_show', {'id': user.id}) }}" class="btn-view">
+                                    <i class="fas fa-eye"></i> Voir
+                                </a>
+                                <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn-edit">
+                                    <i class="fas fa-edit"></i> Modifier
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="no-users">Aucun utilisateur trouvé</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

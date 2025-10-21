@@ -1,4 +1,18 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+    <div class="form-group">
+        {{ form_label(form.libelle, 'Libellé') }}
+        {{ form_widget(form.libelle, {'attr': {'placeholder': 'Libellé du matériel'}}) }}
+    </div>
+    
+    <div class="form-group">
+        {{ form_label(form.quantite, 'Quantité') }}
+        {{ form_widget(form.quantite, {'attr': {'placeholder': 'Quantité'}}) }}
+    </div>
+    
+    <div class="form-group">
+        {{ form_label(form.description, 'Description') }}
+        {{ form_widget(form.description, {'attr': {'placeholder': 'Description du matériel'}}) }}
+    </div>
+    
+    <button type="submit" class="materiel-form-btn">{{ button_label|default('Créer le matériel') }}</button>
 {{ form_end(form) }}
