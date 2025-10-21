@@ -1,11 +1,104 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Materiel{% endblock %}
+{% block title %}Nouveau Matériel{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .materiel-form-container {
+            max-width: 400px;
+            margin: 40px auto;
+            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
+            border-radius: 20px;
+            padding: 32px 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .materiel-form-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 28px;
+            color: #1a202c;
+        }
+        form[name="materiel"] .form-group {
+            margin-bottom: 18px;
+        }
+        form[name="materiel"] input,
+        form[name="materiel"] textarea,
+        form[name="materiel"] select {
+            width: 100%;
+            padding: 12px 14px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            font-size: 1rem;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            margin-bottom: 6px;
+            transition: box-shadow 0.2s;
+        }
+        
+        /* Style spécifique pour le champ interventions (sélection multiple) */
+        form[name="materiel"] select[multiple] {
+            min-height: 120px;
+            padding: 8px;
+        }
+        
+        form[name="materiel"] select[multiple] option {
+            padding: 8px 12px;
+            margin: 2px 0;
+            border-radius: 6px;
+            background: #f8f9fa;
+        }
+        
+        form[name="materiel"] select[multiple] option:checked {
+            background: #339af0;
+            color: white;
+        }
+        form[name="materiel"] input:focus,
+        form[name="materiel"] textarea:focus,
+        form[name="materiel"] select:focus {
+            box-shadow: 0 0 0 2px #339af0;
+        }
+        form[name="materiel"] button,
+        .materiel-form-btn {
+            width: 100%;
+            padding: 12px 0;
+            background-color: #339af0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #fff;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        form[name="materiel"] button:hover,
+        .materiel-form-btn:hover {
+            background-color: #1976d2;
+        }
+        .back-link {
+            display: block;
+            margin: 18px auto 0 auto;
+            text-align: center;
+            font-size: 0.97rem;
+            color: #339af0;
+            text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+            color: #1976d2;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Materiel</h1>
+    <div class="materiel-form-container">
+        <h1 class="materiel-form-title">Créer un nouveau matériel</h1>
 
-    {{ include('materiel/_form.html.twig') }}
+        {{ include('materiel/_form.html.twig') }}
 
-    <a href="{{ path('app_materiel_index') }}">back to list</a>
+        <a href="{{ path('app_materiel_index') }}" class="back-link">Retour à la liste</a>
+    </div>
 {% endblock %}

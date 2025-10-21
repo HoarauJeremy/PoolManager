@@ -1,34 +1,215 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Materiel{% endblock %}
+{% block title %}Détails du Matériel{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .materiel-show-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        .materiel-show-header {
+            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .materiel-show-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1a202c;
+            margin: 0 0 10px 0;
+        }
+        
+        .materiel-id {
+            font-size: 1.1rem;
+            color: #6c757d;
+            margin: 0;
+        }
+        
+        .details-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+        }
+        
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+        
+        .details-table th {
+            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: bold;
+            color: #1a202c;
+            border: none;
+            font-size: 1rem;
+            width: 200px;
+            border-radius: 10px 0 0 10px;
+        }
+        
+        .details-table td {
+            padding: 15px 20px;
+            border: none;
+            background: #f8f9fa;
+            border-radius: 0 10px 10px 0;
+            font-size: 1rem;
+        }
+        
+        .details-table tr {
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        .details-table tr:not(:last-child) {
+            margin-bottom: 15px;
+        }
+        
+        .description-cell {
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+        
+        .actions-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .action-btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .action-btn.back {
+            background-color: #6c757d;
+            color: white;
+        }
+        
+        .action-btn.back:hover {
+            background-color: #5a6268;
+            color: white;
+        }
+        
+        .action-btn.edit {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .action-btn.edit:hover {
+            background-color: #e0a800;
+            color: #212529;
+        }
+        
+        .action-btn.delete {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .action-btn.delete:hover {
+            background-color: #c82333;
+            color: white;
+        }
+        
+        .delete-form {
+            margin-top: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .materiel-show-container {
+                margin: 20px auto;
+                padding: 10px;
+            }
+            
+            .materiel-show-title {
+                font-size: 2rem;
+            }
+            
+            .details-container,
+            .actions-container {
+                padding: 20px;
+            }
+            
+            .details-table th,
+            .details-table td {
+                padding: 12px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .action-btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Materiel</h1>
+    <div class="materiel-show-container">
+        <div class="materiel-show-header">
+            <h1 class="materiel-show-title">{{ materiel.libelle }}</h1>
+            <p class="materiel-id">ID: {{ materiel.id }}</p>
+        </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ materiel.id }}</td>
-            </tr>
-            <tr>
-                <th>Libelle</th>
-                <td>{{ materiel.libelle }}</td>
-            </tr>
-            <tr>
-                <th>Quantite</th>
-                <td>{{ materiel.quantite }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ materiel.description }}</td>
-            </tr>
-        </tbody>
-    </table>
+        <div class="details-container">
+            <table class="details-table">
+                <tbody>
+                    <tr>
+                        <th>Libellé</th>
+                        <td>{{ materiel.libelle }}</td>
+                    </tr>
+                    <tr>
+                        <th>Quantité</th>
+                        <td>{{ materiel.quantite }}</td>
+                    </tr>
+                    <tr>
+                        <th>Description</th>
+                        <td class="description-cell">{{ materiel.description }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
-    <a href="{{ path('app_materiel_index') }}">back to list</a>
-
-    <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}">edit</a>
-
-    {{ include('materiel/_delete_form.html.twig') }}
+        <div class="actions-container">
+            <div class="action-buttons">
+                <a href="{{ path('app_materiel_index') }}" class="action-btn back">Retour à la liste</a>
+                <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}" class="action-btn edit">Modifier</a>
+            </div>
+            
+            <div class="delete-form">
+                {{ include('materiel/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
 {% endblock %}

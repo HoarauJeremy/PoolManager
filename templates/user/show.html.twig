@@ -1,0 +1,181 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails de l'utilisateur {{ user.email }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .user-detail-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .user-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding-bottom: 20px;
+        }
+        .user-header:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, #b3d8fc 0%, #a1c4fd 100%);
+            border-radius: 2px;
+        }
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #b3d8fc 0%, #a1c4fd 100%);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+        .user-title {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        .user-email {
+            color: #718096;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        .user-id {
+            color: #a0aec0;
+            font-size: 0.9rem;
+        }
+        .user-details {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .detail-item {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #edf2f7;
+        }
+        .detail-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .detail-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #718096;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .detail-value {
+            font-size: 1rem;
+            color: #2d3748;
+            font-weight: 500;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background-color: #ebf8ff;
+            color: #2b6cb0;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        .role-badge.role-admin {
+            background-color: #fff5f5;
+            color: #c53030;
+        }
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            background: #f8fafc;
+            color: #4a5568;
+            border: 1px solid #e2e8f0;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+        .btn-back:hover {
+            background: #f1f5f9;
+            color: #2d3748;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .btn-back i {
+            margin-right: 8px;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="user-detail-container">
+        <div class="user-header">
+            <div class="user-avatar">
+                {{ user.email|first|upper }}
+            </div>
+            <h1 class="user-title">
+                {% if user.nom is defined and user.prenom is defined %}
+                    {{ user.prenom }} {{ user.nom }}
+                {% else %}
+                    {{ user.email }}
+                {% endif %}
+            </h1>
+            <div class="user-email">{{ user.email }}</div>
+            <div class="user-id">ID: #{{ user.id }}</div>
+        </div>
+        
+        <div class="user-details">
+            <div class="detail-item">
+                <div class="detail-label">Adresse email</div>
+                <div class="detail-value">{{ user.email }}</div>
+            </div>
+            
+            <div class="detail-item">
+                <div class="detail-label">Rôles</div>
+                <div class="detail-value">
+                    {% for role in user.roles %}
+                        <span class="role-badge {{ role == 'ROLE_ADMIN' ? 'role-admin' : '' }}">
+                            {{ role|replace({'ROLE_': ''})|lower|capitalize }}
+                        </span>
+                    {% else %}
+                        <span class="text-muted">Aucun rôle défini</span>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            {% if user.telGsm is defined and user.telGsm %}
+            <div class="detail-item">
+                <div class="detail-label">Téléphone</div>
+                <div class="detail-value">{{ user.telGsm }}</div>
+            </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center">
+            <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="btn-view" style="margin-right: 10px;">
+                <i class="fas fa-edit"></i> Modifier
+            </a>
+            <a href="{{ path('app_user_index') }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Retour à la liste
+            </a>
+        </div>
+    </div>
+{% endblock %}
