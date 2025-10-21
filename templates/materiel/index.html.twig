@@ -1,39 +1,205 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Materiel index{% endblock %}
+{% block title %}Liste des Matériels{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .materiel-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        
+        .materiel-header {
+            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        
+        .materiel-title {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1a202c;
+            margin: 0 0 20px 0;
+        }
+        
+        .create-btn {
+            display: inline-block;
+            background-color: #339af0;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        
+        .create-btn:hover {
+            background-color: #1976d2;
+            color: white;
+        }
+        
+        .table-container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            overflow-x: auto;
+        }
+        
+        .materiel-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0;
+        }
+        
+        .materiel-table thead {
+            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
+        }
+        
+        .materiel-table th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: bold;
+            color: #1a202c;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .materiel-table td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+        }
+        
+        .materiel-table tbody tr:hover {
+            background-color: #f8f9fa;
+            transition: background 0.2s;
+        }
+        
+        .materiel-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .action-links {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-link {
+            padding: 6px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        
+        .action-link.show {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .action-link.show:hover {
+            background-color: #218838;
+            color: white;
+        }
+        
+        .action-link.edit {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        
+        .action-link.edit:hover {
+            background-color: #e0a800;
+            color: #212529;
+        }
+        
+        .no-records {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        
+        .description-cell {
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        @media (max-width: 768px) {
+            .materiel-container {
+                margin: 20px auto;
+                padding: 10px;
+            }
+            
+            .materiel-title {
+                font-size: 2rem;
+            }
+            
+            .table-container {
+                padding: 15px;
+            }
+            
+            .materiel-table th,
+            .materiel-table td {
+                padding: 10px 8px;
+                font-size: 0.9rem;
+            }
+            
+            .action-links {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1>Materiel index</h1>
+    <div class="materiel-container">
+        <div class="materiel-header">
+            <h1 class="materiel-title">Liste des Matériels</h1>
+            <a href="{{ path('app_materiel_new') }}" class="create-btn">Créer un nouveau matériel</a>
+        </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Libelle</th>
-                <th>Quantite</th>
-                <th>Description</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for materiel in materiels %}
-            <tr>
-                <td>{{ materiel.id }}</td>
-                <td>{{ materiel.libelle }}</td>
-                <td>{{ materiel.quantite }}</td>
-                <td>{{ materiel.description }}</td>
-                <td>
-                    <a href="{{ path('app_materiel_show', {'id': materiel.id}) }}">show</a>
-                    <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="5">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_materiel_new') }}">Create new</a>
+        <div class="table-container">
+            <table class="materiel-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Libellé</th>
+                        <th>Quantité</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for materiel in materiels %}
+                    <tr>
+                        <td>{{ materiel.id }}</td>
+                        <td>{{ materiel.libelle }}</td>
+                        <td>{{ materiel.quantite }}</td>
+                        <td class="description-cell" title="{{ materiel.description }}">{{ materiel.description }}</td>
+                        <td>
+                            <div class="action-links">
+                                <a href="{{ path('app_materiel_show', {'id': materiel.id}) }}" class="action-link show">Voir</a>
+                                <a href="{{ path('app_materiel_edit', {'id': materiel.id}) }}" class="action-link edit">Modifier</a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="no-records">Aucun matériel trouvé</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
