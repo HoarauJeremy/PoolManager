@@ -48,7 +48,7 @@ class Intervention
     /**
      * @var Collection<int, image>
      */
-    #[ORM\OneToMany(targetEntity: image::class, mappedBy: 'intervention')]
+    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'intervention')]
     private Collection $image;
 
     /**
@@ -59,7 +59,7 @@ class Intervention
 
     #[ORM\ManyToOne(inversedBy: 'interventions')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?client $client = null;
+    private ?Client $client = null;
 
     /**
      * @var Collection<int, user>
@@ -195,7 +195,7 @@ class Intervention
         return $this->image;
     }
 
-    public function addImage(image $image): static
+    public function addImage(Image $image): static
     {
         if (!$this->image->contains($image)) {
             $this->image->add($image);
@@ -205,7 +205,7 @@ class Intervention
         return $this;
     }
 
-    public function removeImage(image $image): static
+    public function removeImage(Image $image): static
     {
         if ($this->image->removeElement($image)) {
             // set the owning side to null (unless already changed)
@@ -237,16 +237,16 @@ class Intervention
     public function removeMateriel(Materiel $materiel): static
     {
         $this->materiel->removeElement($materiel);
-
+ 
         return $this;
     }
 
-    public function getClient(): ?client
+    public function getClient(): ?Client
     {
         return $this->client;
     }
 
-    public function setClient(?client $client): static
+    public function setClient(?Client $client): static
     {
         $this->client = $client;
 
