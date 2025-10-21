@@ -1,5 +1,9 @@
 {{ form_start(form) }}
 {{ form_widget(form) }}
 
-
+<div class="mt-8">
+	<button type="submit" class="w-full px-6 py-3 bg-blue-600 text-white font-semibold rounded-full hover:bg-blue-700 transition-colors shadow-md">
+		{{ button_label|default('Ajouter') }}
+	</button>
+</div>
 {{ form_end(form) }}

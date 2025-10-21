@@ -4,14 +4,14 @@
 {% endblock %}
 
 {% block body %}
-	<h1 class="text-red-500">Intervention index</h1>
+	<h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Liste des Interventions</h1>
 
 	<div class="bg-blue-50 rounded-lg p-6 shadow-lg">
 		<div class="overflow-x-auto">
 			<table class="w-full bg-white rounded-lg overflow-hidden">
 				<thead class="bg-blue-500 text-white">
 					<tr>
-						<th class="px-4 py-3 text-left text-sm font-semibold">Id</th>
+
 						<th class="px-4 py-3 text-left text-sm font-semibold">Libelle</th>
 						<th class="px-4 py-3 text-left text-sm font-semibold">Date début</th>
 						<th class="px-4 py-3 text-left text-sm font-semibold">Date fin</th>
@@ -26,7 +26,6 @@
 				<tbody class="divide-y divide-gray-200">
 					{% for intervention in interventions %}
 						<tr class="hover:bg-blue-50 transition-colors">
-							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.id }}</td>
 							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.libelle }}</td>
 							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.dateDebut ? intervention.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
 							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.dateFin ? intervention.dateFin|date('Y-m-d H:i:s') : '' }}</td>
@@ -52,7 +51,7 @@
 						</tr>
 					{% else %}
 						<tr>
-							<td colspan="10" class="px-4 py-8 text-center text-gray-500">
+							<td colspan="10" class="px-4 py-8 text-center text-gray-500 ml-5">
 								Aucune intervention trouvée
 							</td>
 						</tr>
@@ -60,7 +59,9 @@
 				</tbody>
 			</table>
 		</div>
+		<div class="mt-6">
+			<a href="{{ path('app_intervention_new') }}" class="mt-20 text-s font-bold text-blue-600 mb-6 text-center">Créer une Intervention</a>
+		</div>
 	</div>
 
-	<a href="{{ path('app_intervention_new') }}">Create new</a>
 {% endblock %}
