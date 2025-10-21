@@ -1,19 +1,145 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}Inscription{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .register-container {
+            max-width: 400px;
+            margin: 40px auto;
+            background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
+            border-radius: 20px;
+            padding: 32px 24px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .register-title {
+            text-align: center;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 28px;
+            color: #1a202c;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            font-size: 1rem;
+            background: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            margin-bottom: 6px;
+            transition: box-shadow 0.2s;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 0 2px #339af0;
+        }
+        .btn-register {
+            width: 100%;
+            padding: 12px 0;
+            background-color: #339af0;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            color: #fff;
+            margin-top: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn-register:hover {
+            background-color: #1976d2;
+        }
+        .login-link {
+            display: block;
+            margin: 18px auto 0 auto;
+            text-align: center;
+            font-size: 0.97rem;
+            color: #339af0;
+            text-decoration: none;
+        }
+        .login-link:hover {
+            text-decoration: underline;
+            color: #1976d2;
+        }
+        .form-check {
+            margin-top: 15px;
+        }
+        .form-check-label {
+            margin-left: 5px;
+        }
+        .form-error {
+            color: #e74c3c;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+    </style>
+{% endblock %}
 
 {% block body %}
-    <h1 class="text-center">Register</h1>
+    <div class="register-container">
+        <h1 class="register-title">Créer un compte</h1>
 
-    {{ form_errors(registrationForm) }}
+        {{ form_start(registrationForm, {'attr': {'class': 'register-form'}}) }}
+            <div class="form-group">
+                {{ form_label(registrationForm.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.nom, {'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Nom'
+                }}) }}
+                {{ form_errors(registrationForm.nom) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.prenom, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.prenom, {'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Prénom'
+                }}) }}
+                {{ form_errors(registrationForm.prenom) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.tel_gsm, 'Numéro de téléphone', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.tel_gsm, {'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'Numéro de téléphone'
+                }}) }}
+                {{ form_errors(registrationForm.tel_gsm) }}
+            </div>
+            <div class="form-group">
+                {{ form_label(registrationForm.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.email, {'attr': {
+                    'class': 'form-control',
+                    'placeholder': 'votre@email.com'
+                }}) }}
+                {{ form_errors(registrationForm.email) }}
+            </div>
 
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.email) }}
-        {{ form_row(registrationForm.plainPassword, {
-            label: 'Password'
-        }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
+            <div class="form-group">
+                {{ form_label(registrationForm.plainPassword, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(registrationForm.plainPassword, {
+                    'attr': {
+                        'class': 'form-control',
+                        'placeholder': '••••••••',
+                        'autocomplete': 'new-password'
+                    },
+                    'label': 'Mot de passe'
+                }) }}
+                {{ form_errors(registrationForm.plainPassword) }}
+            </div>
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+            <div class="form-check">
+                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'form-check-input'}}) }}
+                {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation', {'label_attr': {'class': 'form-check-label'}}) }}
+                {{ form_errors(registrationForm.agreeTerms) }}
+            </div>
+
+            <button type="submit" class="btn-register">S'inscrire</button>
+        {{ form_end(registrationForm) }}
+
+        <a href="{{ path('app_login') }}" class="login-link">Déjà un compte ? Connectez-vous</a>
+    </div>
 {% endblock %}
