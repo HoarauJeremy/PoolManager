@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Client;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -20,7 +21,9 @@ class ClientType extends AbstractType
             ->add('code_postal')
             ->add('tel_fixe')
             ->add('tel_gsm')
-        ;
+            ->add('save', SubmitType::class, [
+                'label' => 'Ajouter un client',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

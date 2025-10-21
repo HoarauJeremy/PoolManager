@@ -4,13 +4,13 @@
 
 {% block stylesheets %}
     {{ parent() }}
-    <link rel="stylesheet" href="{{ asset('css/index.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/client/index.css') }}">
 {% endblock %}
 
 {% block body %}
     <div class="clients-wrapper">
         <h1 style="text-align:left; margin-bottom:14px;">Liste des clients</h1>
-        
+    
         {% if clients|length > 0 %}
             <div class="cards-grid">
             {% for client in clients %}
@@ -25,8 +25,7 @@
                         <li><strong>Tél. GSM :</strong> {{ client.telGsm ?? '-' }}</li>
                     </ul>
                     <div class="card-actions">
-                        <a href="{{ path('app_client_show', {'id': client.id}) }}">Voir</a>
-                        <a href="{{ path('app_client_edit', {'id': client.id}) }}">Éditer</a>
+                        <a href="{{ path('app_client_edit', {'id': client.id}) }}">Voir</a>
                     </div>
                 </div>
             {% endfor %}

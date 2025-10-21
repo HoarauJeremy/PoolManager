@@ -1,0 +1,63 @@
+.client-form-container {
+    max-width: 400px;
+    margin: 40px auto;
+    background: linear-gradient(180deg, #b3d8fc 0%, #a1c4fd 100%);
+    border-radius: 20px;
+    padding: 32px 24px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.client-form-title {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 28px;
+    color: #1a202c;
+}
+form[name="client"] .form-group {
+    margin-bottom: 18px;
+}
+form[name="client"] input {
+    width: 100%;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 10px;
+    outline: none;
+    font-size: 1rem;
+    background: #fff;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+    margin-bottom: 6px;
+    transition: box-shadow 0.2s;
+}
+form[name="client"] input:focus {
+    box-shadow: 0 0 0 2px #339af0;
+}
+form[name="client"] button,
+.client-form-btn {
+    width: 100%;
+    padding: 12px 0;
+    background-color: #339af0;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #fff;
+    margin-top: 20px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+form[name="client"] button:hover,
+.client-form-btn:hover {
+    background-color: #1976d2;
+}
+.back-link {
+    display: block;
+    margin: 18px auto 0 auto;
+    text-align: center;
+    font-size: 0.97rem;
+    color: #339af0;
+    text-decoration: none;
+}
+.back-link:hover {
+    text-decoration: underline;
+    color: #1976d2;
+}
