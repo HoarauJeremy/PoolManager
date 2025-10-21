@@ -4,7 +4,7 @@ namespace App\Form;
 
 use App\Entity\client;
 use App\Entity\Intervention;
-use App\Entity\Material;
+use App\Entity\Materiel;
 use App\Entity\TypeIntervention;
 use App\Entity\user;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -77,7 +77,7 @@ class InterventionType extends AbstractType
             ->add('type', EntityType::class, [
                 'label' => false,
                 'class' => TypeIntervention::class,
-                'choice_label' => 'id',
+                'choice_label' => 'nom',
                 'placeholder' => 'Type d\'intervention',
 
                 'attr' => [
@@ -86,8 +86,10 @@ class InterventionType extends AbstractType
             ])
             ->add('materiel', EntityType::class, [
                 //'label' => false,
-                'class' => Material::class,
-                'choice_label' => 'id',
+                'class' => Materiel::class,
+                'choice_label' => function (Materiel $materiel) {
+                    return $materiel->getLibelle() . ' ' . $materiel->getDescription();
+                }, // Renvoi le Libellé + la description
                 'multiple' => true,
                 'placeholder' => 'Matériels',
                 'attr' => [
@@ -97,7 +99,9 @@ class InterventionType extends AbstractType
             ->add('client', EntityType::class, [
                 'label' => false,
                 'class' => Client::class,
-                'choice_label' => 'id',
+                'choice_label' => function (Client $client) {
+                    return $client->getNom() . ' ' . $client->getPrenom();
+                }, // Renvoi le nom + le prénom
                 'placeholder' => 'Client',
                 'attr' => [
 
