@@ -22,10 +22,15 @@ fi
 
 cd /var/www/html
 
-# 3) (Optionnel) fallback install si vendor/node_modules manquent
-if [[ -f composer.json && ! -d vendor ]]; then
+# Debug: Vérifier que les fichiers sont présents
+echo "-> Vérification des fichiers"
+ls -la public/ || echo "Dossier public non trouvé"
+ls -la public/index.php || echo "index.php non trouvé"
+
+# 3) Installation des dépendances (obligatoire)
+if [[ -f composer.json ]]; then
   echo "-> composer install (no-dev)"
-  composer install --no-interaction --optimize-autoloader
+  composer install --no-interaction --optimize-autoloader --no-dev
 fi
 
 if [[ -f package.json && ! -d node_modules ]]; then
