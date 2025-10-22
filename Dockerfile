@@ -35,14 +35,15 @@ WORKDIR /var/www/html
 # Copier le code source de l'application
 COPY . /var/www/html/
 
-# s'assurer que start.sh est présent dans l'image
+# Copier le script de démarrage
 COPY ./start.sh /usr/local/bin/start.sh
 
 # Droits par défaut
 RUN chown -R www-data:www-data /var/www/html
 
+# Configuration Apache
 COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
 
-# Ports & CMD Apache
+# Ports & CMD
 EXPOSE 80
 CMD ["/usr/local/bin/start.sh"]
