@@ -1,7 +1,8 @@
 # ================================
 # STAGE 1: Build Node.js assets
 # ================================
-FROM node:20-alpine AS node-builder
+# Use Debian-based image instead of Alpine for better native module compatibility (lightningcss)
+FROM node:20-slim AS node-builder
 
 WORKDIR /app
 
