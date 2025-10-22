@@ -3,17 +3,11 @@
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "Dockerfile"
-    },
+  },
   "deploy": {
-    "preDeployCommands": [
-        "npm i",
-        "npm run build",
-        "composer i", 
-        "symfony console d:migrations:migrate"
-    ],
-    "startCommand": "echo starting!",
-    "healthcheckPath": "/",
+    "startCommand": "bash /var/www/html/start.sh",
+    "healthcheckPath": "/healthz",
     "healthcheckTimeout": 300,
-    "restartPolicyType": "never"
-    }
+    "restartPolicyType": "always"
+  }
 }
