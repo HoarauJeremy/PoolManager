@@ -3,6 +3,10 @@ name: Generate Changelog for Symfony Project
 on:
   release:
     types: [created, edited]  # Déclenche sur création/édition d'une release manuelle
+  workflow_dispatch:  # Permet de lancer manuellement depuis l'onglet Actions (pour tester)
+
+permissions:
+  contents: write  # Essentiel pour committer et pousser CHANGELOG.md
 
 jobs:
   generate-changelog:
@@ -13,40 +17,55 @@ jobs:
         with:
           fetch-depth: 0  # Récupère l'historique complet pour analyser les commits/tags
 
-      - name: Setup PHP (pour valider Symfony si besoin)
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'  # Version compatible Symfony (adaptez à votre projet)
-          coverage: none
-
-      - name: Install Composer dependencies (optionnel, pour tester le projet)
+      - name: Debug - List tags and recent commits
         run: |
-          composer install --no-progress --no-interaction --optimize-autoloader
+          echo "=== Tags disponibles ==="
+          git tag --list --sort=-version:refname | head -5
+          echo "=== 5 derniers commits ==="
+          git log --oneline -5
+          PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1) 2>/dev/null || echo "")
+          echo "Tag actuel (si release): ${{ github.event.release.tag_name || 'Aucun (test manuel)' }}"
+          echo "Tag précédent: $PREV_TAG"
 
-      - name: Install git-cliff
+      - name: Install git-cliff (dernière version stable)
         run: |
-          curl -L https://github.com/orhun/git-cliff/releases/download/v1.5.0/git-cliff-1.5.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
-          sudo mv git-cliff-1.5.0-x86_64-unknown-linux-gnu/git-cliff /usr/local/bin/
+          # Télécharge la dernière release x86_64-linux (plus robuste que v1.5.0 fixe)
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/orhun/git-cliff/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+          curl -L https://github.com/orhun/git-cliff/releases/download/${LATEST_VERSION}/git-cliff-${LATEST_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          sudo mv git-cliff-${LATEST_VERSION}-x86_64-unknown-linux-gnu/git-cliff /usr/local/bin/
+          git-cliff --version  # Vérifie l'installation
 
       - name: Generate Changelog
+        id: changelog
         run: |
-          # Crée ou met à jour CHANGELOG.md avec la nouvelle version
+          TAG_NAME="${{ github.event.release.tag_name || 'unreleased' }}"  # Fallback pour test manuel
+          PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1) 2>/dev/null || echo "")
+          FROM_RANGE="${PREV_TAG:-HEAD~10}"  # Range par défaut
+
+          # Crée CHANGELOG.md si inexistant
           if [ ! -f CHANGELOG.md ]; then
             echo "# PoolManager Changelog" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
           fi
-          
-          # Génère la section pour la nouvelle tag (ex. : v1.0.0) depuis le précédent tag
-          PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1) 2>/dev/null || echo "")
-          git-cliff --output CHANGELOG.md --prepend --tag ${{ github.event.release.tag_name }} --from ${PREV_TAG:-HEAD~10}
-          
-          # Alternative basique sans git-cliff (si pas de conventional commits) :
-          # echo "## [${{ github.event.release.tag_name }}] - $(date +%Y-%m-%d)" >> CHANGELOG.md
-          # git log ${PREV_TAG:-HEAD~10}..HEAD --pretty=format:"- %s (%an, %ar)" >> CHANGELOG.md
-          # echo "" >> CHANGELOG.md
+
+          # Essaie git-cliff (nécessite conventional commits pour du contenu riche)
+          git-cliff --output CHANGELOG.md --prepend --tag "$TAG_NAME" --from "$FROM_RANGE" --config cliff.toml || {
+            echo "git-cliff a échoué ou généré vide ; fallback vers git log basique"
+            # Alternative basique : Ajoute une section avec git log
+            echo "## [$TAG_NAME] - $(date +%Y-%m-%d)" >> CHANGELOG.md
+            git log "$FROM_RANGE"..HEAD --pretty=format:"- %s (%an, %ar)" >> CHANGELOG.md || echo "- Pas de nouveaux commits" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          }
+
+          # Affiche un aperçu pour debug
+          echo "=== Aperçu CHANGELOG.md ==="
+          cat CHANGELOG.md | head -20
 
       - name: Commit and Push Changelog
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "docs(changelog): update CHANGELOG.md for ${{ github.event.release.tag_name }}"
+          commit_message: "docs(changelog): update CHANGELOG.md for ${{ github.event.release.tag_name || 'unreleased' }}"
           file_pattern: CHANGELOG.md
           branching_mode: existing  # Met à jour la branche actuelle (main)
+          commit_user_name: "GitHub Actions"
+          commit_user_email: "actions@github.com"
