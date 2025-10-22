@@ -30,6 +30,8 @@ ls -la public/index.php || echo "index.php non trouvé"
 # 3) Installation des dépendances (obligatoire)
 if [[ -f composer.json ]]; then
   echo "-> composer install (no-dev)"
+  # S'assurer que APP_ENV est bien défini pour la production
+  export APP_ENV="${APP_ENV:-prod}"
   composer install --no-interaction --optimize-autoloader --no-dev
 fi
 
@@ -48,18 +50,18 @@ fi
 if [[ -f bin/console ]]; then
   if php bin/console list doctrine:migrations:migrate >/dev/null 2>&1; then
     echo "-> doctrine:migrations:migrate"
-    php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration
+    php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod
   else
     echo "-> doctrine:schema:update --force (fallback)"
-    php bin/console doctrine:schema:update --force --no-interaction
+    php bin/console doctrine:schema:update --force --no-interaction --env=prod
   fi
 
   echo "-> cache:clear & warmup"
-  php bin/console cache:clear --no-warmup
-  php bin/console cache:warmup
+  php bin/console cache:clear --no-warmup --env=prod
+  php bin/console cache:warmup --env=prod
 
   echo "-> assets:install"
-  php bin/console assets:install --no-interaction || true
+  php bin/console assets:install --no-interaction --env=prod || true
 fi
 
 # 6) Vérifier les permissions et créer healthcheck
