@@ -1,10 +1,22 @@
 {{ form_start(form) }}
     <div class="mb-5">
-        {{ form_label(form.nom, 'Nom de l\'intervention', {'label_attr': {'class': 'block mb-2 font-medium text-gray-700 text-sm'}}) }}
-        {{ form_widget(form.nom, {'attr': {'class': 'w-full px-4 py-3 border-0 rounded-lg bg-white text-black text-base focus:outline-none focus:ring-3 focus:ring-blue-200 transition-shadow', 'placeholder': 'Libellé du matériel'}}) }}
+        <!-- Label du champ -->
+        {{ form_label(form.nom, 'Nom de l\'intervention', {
+            'label_attr': {'class': 'block mb-2 font-medium text-gray-700 text-sm'}
+        }) }}
+
+        <!-- Champ de saisie stylé avec Tailwind -->
+        {{ form_widget(form.nom, {
+            'attr': {
+                'class': 'w-full px-4 py-3 border-0 rounded-lg bg-white text-black text-base focus:outline-none focus:ring-3 focus:ring-blue-200 transition-shadow',
+                'placeholder': 'Libellé du matériel'
+            }
+        }) }}
     </div>
 
-    <button type="submit" class="w-full bg-blue-600 text-white border-0 rounded-lg py-4 text-base font-bold cursor-pointer hover:bg-blue-700 active:bg-blue-800 transition-colors mt-2">
+    <!-- Bouton de validation stylé -->
+    <button type="submit"
+            class="w-full bg-blue-600 text-white border-0 rounded-lg py-4 text-base font-bold cursor-pointer hover:bg-blue-700 active:bg-blue-800 transition-colors mt-2">
         {{ button_label|default('Créer le matériel') }}
     </button>
 {{ form_end(form) }}

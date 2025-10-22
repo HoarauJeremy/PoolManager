@@ -15,7 +15,7 @@
     </div>
 
     {% if type_interventions|length > 0 %}
-        <!-- Grille des cartes -->
+        <!-- Grille responsive des cartes -->
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-8">
             {% for type_intervention in type_interventions %}
                 <div class="card rounded-2xl shadow-lg bg-white p-6 flex flex-col justify-between border border-gray-100 hover:shadow-xl transition transform hover:-translate-y-1">
@@ -27,7 +27,7 @@
                         </h2>
                     </div>
 
-                    <!-- Actions -->
+                    <!-- Actions : modifier / supprimer -->
                     <div class="flex justify-between items-center border-t border-gray-200 pt-4 mt-auto space-x-2">
                         <a href="{{ path('app_type_intervention_edit', {'id': type_intervention.id}) }}"
                            class="bg-yellow-500 hover:bg-yellow-600 text-white font-medium text-sm px-4 py-2 rounded-lg transition">
