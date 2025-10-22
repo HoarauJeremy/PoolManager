@@ -62,6 +62,9 @@ if [[ "${RUN_BOOT_TASKS:-0}" == "1" && -f bin/console ]]; then
 
   echo "-> assets:install"
   php bin/console assets:install --no-interaction --env=prod || true
+
+  echo "-> doctrine:fixtures:load (première fois uniquement)"
+  php bin/console doctrine:fixtures:load --no-interaction --env=prod || true
 fi
 
 # 6) Vérifier les permissions et créer healthcheck
