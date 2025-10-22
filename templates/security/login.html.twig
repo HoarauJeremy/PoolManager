@@ -1,3 +1,15 @@
+{#
+ * Template de la page de connexion
+ * 
+ * Ce template affiche le formulaire de connexion avec des styles Tailwind CSS.
+ * Il gère également l'affichage des messages d'erreur et des notifications.
+ *
+ * @var \Symfony\Component\Form\FormView $form
+ * @var \Symfony\Component\Security\Core\Exception\AuthenticationException error
+ * @var string last_username
+ * @var string csrf_token
+ #}
+
 {% extends 'basenologin.html.twig' %}
 
 {% block title %}Connexion{% endblock %}

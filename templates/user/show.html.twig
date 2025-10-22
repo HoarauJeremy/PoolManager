@@ -1,3 +1,12 @@
+{#
+ * Template de détail d'un utilisateur
+ * 
+ * Ce template affiche les informations détaillées d'un utilisateur,
+ * y compris son email, ses rôles et d'autres informations de profil.
+ *
+ * @var App\Entity\User user L'utilisateur à afficher
+ #}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Détails de l'utilisateur {{ user.email }}{% endblock %}
