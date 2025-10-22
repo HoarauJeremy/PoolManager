@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Enum;
 
 enum Status: string
@@ -11,7 +12,7 @@ enum Status: string
 
     public function label(): string
     {
-        return match($this) {
+        return match ($this) {
             self::PLANIFIER => 'Planifer',
             self::TERMINER => 'Terminer',
             self::ANNULER => 'Annuler',

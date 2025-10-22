@@ -241,4 +241,45 @@ class InterventionRepository extends ServiceEntityRepository
 
         return array_slice($activites, 0, $limit);
     }
+
+    /**
+     * Récupère toutes les interventions d'un mois donné
+     */
+    public function findInterventionsByMonth(int $year, int $month): array
+    {
+        $startDate = new \DateTime("$year-$month-01 00:00:00");
+        $endDate = clone $startDate;
+        $endDate->modify('last day of this month')->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('i')
+            ->where('i.date_debut >= :start')
+            ->andWhere('i.date_debut <= :end')
+            ->setParameter('start', $startDate)
+            ->setParameter('end', $endDate)
+            ->orderBy('i.date_debut', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Récupère les interventions d'un mois donné pour un utilisateur
+     */
+    public function findInterventionsByMonthAndUser(int $year, int $month, int $userId): array
+    {
+        $startDate = new \DateTime("$year-$month-01 00:00:00");
+        $endDate = clone $startDate;
+        $endDate->modify('last day of this month')->setTime(23, 59, 59);
+
+        return $this->createQueryBuilder('i')
+            ->leftJoin('i.technicens', 't')
+            ->where('t.id = :userId')
+            ->andWhere('i.date_debut >= :start')
+            ->andWhere('i.date_debut <= :end')
+            ->setParameter('userId', $userId)
+            ->setParameter('start', $startDate)
+            ->setParameter('end', $endDate)
+            ->orderBy('i.date_debut', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 }
