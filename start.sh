@@ -66,7 +66,13 @@ APACHE_PID=$!
   set -e
   echo "-> Composer / build / migrations / cache / fixtures en arrière-plan"
 
-  # Composer (avec dev si LOAD_FIXTURES=1)
+  # --- FRONT ---
+  if [[ -f package.json ]]; then
+    (npm ci || npm install --legacy-peer-deps) || true
+    (npm run build || npm run prod) || true   # doit générer public/build/** et entrypoints.json
+  fi
+
+  # --- BACK ---
   if [[ -f composer.json ]]; then
     if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
       composer install --no-interaction --optimize-autoloader
@@ -75,14 +81,12 @@ APACHE_PID=$!
     fi
   fi
 
-  # Migrations / cache / assets
   if [[ -f bin/console ]]; then
     php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env="${APP_ENV}" || true
     php bin/console cache:clear --no-warmup --env="${APP_ENV}" || true
     php bin/console cache:warmup --env="${APP_ENV}" || true
     php bin/console assets:install --no-interaction --env="${APP_ENV}" || true
 
-    # Fixtures only si LOAD_FIXTURES=1
     if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
       php -d memory_limit=-1 bin/console doctrine:fixtures:load --no-interaction -vvv --env="${APP_ENV}" || true
     fi
