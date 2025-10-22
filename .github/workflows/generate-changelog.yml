@@ -1,0 +1,52 @@
+name: Generate Changelog for Symfony Project
+
+on:
+  release:
+    types: [created, edited]  # Déclenche sur création/édition d'une release manuelle
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Récupère l'historique complet pour analyser les commits/tags
+
+      - name: Setup PHP (pour valider Symfony si besoin)
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'  # Version compatible Symfony (adaptez à votre projet)
+          coverage: none
+
+      - name: Install Composer dependencies (optionnel, pour tester le projet)
+        run: |
+          composer install --no-progress --no-interaction --optimize-autoloader
+
+      - name: Install git-cliff
+        run: |
+          curl -L https://github.com/orhun/git-cliff/releases/download/v1.5.0/git-cliff-1.5.0-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          sudo mv git-cliff-1.5.0-x86_64-unknown-linux-gnu/git-cliff /usr/local/bin/
+
+      - name: Generate Changelog
+        run: |
+          # Crée ou met à jour CHANGELOG.md avec la nouvelle version
+          if [ ! -f CHANGELOG.md ]; then
+            echo "# PoolManager Changelog" > CHANGELOG.md
+          fi
+          
+          # Génère la section pour la nouvelle tag (ex. : v1.0.0) depuis le précédent tag
+          PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1) 2>/dev/null || echo "")
+          git-cliff --output CHANGELOG.md --prepend --tag ${{ github.event.release.tag_name }} --from ${PREV_TAG:-HEAD~10}
+          
+          # Alternative basique sans git-cliff (si pas de conventional commits) :
+          # echo "## [${{ github.event.release.tag_name }}] - $(date +%Y-%m-%d)" >> CHANGELOG.md
+          # git log ${PREV_TAG:-HEAD~10}..HEAD --pretty=format:"- %s (%an, %ar)" >> CHANGELOG.md
+          # echo "" >> CHANGELOG.md
+
+      - name: Commit and Push Changelog
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs(changelog): update CHANGELOG.md for ${{ github.event.release.tag_name }}"
+          file_pattern: CHANGELOG.md
+          branching_mode: existing  # Met à jour la branche actuelle (main)
