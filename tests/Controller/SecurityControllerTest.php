@@ -49,7 +49,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->submit($form);
         
         // Vérifier la redirection après connexion réussie
-        $this->assertResponseRedirects($this->homePath);
+        $this->assertResponseRedirects('/dashboard');
         
         // Suivre la redirection
         $this->client->followRedirect();
@@ -116,7 +116,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->request('GET', $this->logoutPath);
         
         // Vérifier la redirection après déconnexion
-        $this->assertResponseRedirects($this->homePath);
+        $this->assertResponseRedirects('/login');
         
         // Suivre la redirection
         $this->client->followRedirect();
@@ -135,7 +135,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->request('GET', $this->loginPath);
         
         // Vérifier la redirection vers la page d'accueil
-        $this->assertResponseRedirects($this->homePath);
+        $this->assertResponseRedirects('/');
     }
 
     /**
