@@ -46,12 +46,6 @@ class Intervention
     private ?TypeIntervention $type = null;
 
     /**
-     * @var Collection<int, image>
-     */
-    #[ORM\OneToMany(targetEntity: Image::class, mappedBy: 'intervention')]
-    private Collection $image;
-
-    /**
      * @var Collection<int, Materiel>
      */
     #[ORM\ManyToMany(targetEntity: Materiel::class, inversedBy: 'interventions')]
@@ -69,7 +63,6 @@ class Intervention
 
     public function __construct()
     {
-        $this->image = new ArrayCollection();
         $this->materiel = new ArrayCollection();
         $this->technicens = new ArrayCollection();
     }
@@ -183,36 +176,6 @@ class Intervention
     public function setType(?TypeIntervention $type): static
     {
         $this->type = $type;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, image>
-     */
-    public function getImage(): Collection
-    {
-        return $this->image;
-    }
-
-    public function addImage(Image $image): static
-    {
-        if (!$this->image->contains($image)) {
-            $this->image->add($image);
-            $image->setIntervention($this);
-        }
-
-        return $this;
-    }
-
-    public function removeImage(Image $image): static
-    {
-        if ($this->image->removeElement($image)) {
-            // set the owning side to null (unless already changed)
-            if ($image->getIntervention() === $this) {
-                $image->setIntervention(null);
-            }
-        }
 
         return $this;
     }
