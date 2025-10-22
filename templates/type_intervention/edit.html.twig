@@ -7,9 +7,13 @@
         <div class="bg-gradient-to-b from-blue-200 to-blue-300 rounded-3xl p-10 w-full max-w-md shadow-lg">
             <h1 class="text-center text-3xl font-bold text-gray-800 mb-8">Modifier</h1>
 
+            <!-- Inclusion du même formulaire -->
             {{ include('type_intervention/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-            <a href="{{ path('app_type_intervention_index') }}" class="block text-center mt-5 text-blue-600 hover:underline text-sm">Retour à la liste</a>
+            <a href="{{ path('app_type_intervention_index') }}"
+               class="block text-center mt-5 text-blue-600 hover:underline text-sm">
+                Retour à la liste
+            </a>
         </div>
     </div>
 {% endblock %}
