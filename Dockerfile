@@ -7,7 +7,7 @@ RUN apt-get update \
        git unzip zip libicu-dev libzip-dev curl gnupg2 ca-certificates \
        apt-transport-https lsb-release \
   && docker-php-ext-install intl pdo_mysql zip opcache \
-  && a2enmod rewrite headers expires \
+  && a2enmod rewrite headers expires dir setenvif \
   && rm -rf /var/lib/apt/lists/*
 
 # Composer
