@@ -41,8 +41,35 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # TEMPORAIRE: Désactiver la sécurité pour tester
-        - { path: ^/, roles: PUBLIC_ACCESS }
+        # Routes accessibles à tous, même non connectés
+        - { path: ^/$, roles: PUBLIC_ACCESS }
+        - { path: ^/login$, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: ROLE_ADMIN }
+        - { path: ^/resetting, roles: PUBLIC_ACCESS }
+        - { path: ^/healthz, roles: PUBLIC_ACCESS }
+        
+        # La route de déconnexion doit être accessible à tous les utilisateurs connectés
+        - { path: ^/logout, roles: IS_AUTHENTICATED_FULLY }
+        
+        # Section admin réservée aux administrateurs
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/intervention/new, roles: ROLE_ADMIN }
+        - { path: ^/intervention/\d+/edit, roles: ROLE_ADMIN }
+        - { path: ^/type/intervention/new, roles: ROLE_ADMIN }
+        - { path: ^/type/intervention/\d+/edit, roles: ROLE_ADMIN }
+        - { path: ^/client/new, roles: ROLE_ADMIN }
+        - { path: ^/client/\d+/edit, roles: ROLE_ADMIN }
+
+        # Routes nécessitant une authentification (plus spécifiques)
+        - { path: ^/type/intervention/, roles: IS_AUTHENTICATED_FULLY}
+        - { path: ^/client/, roles: IS_AUTHENTICATED_FULLY}
+        - { path: ^/intervention/, roles: IS_AUTHENTICATED_FULLY}
+        - { path: ^/materiel/, roles: IS_AUTHENTICATED_FULLY}
+        - { path: ^/dashboard/, roles: IS_AUTHENTICATED_FULLY}
+        - { path: ^/calendrier/, roles: IS_AUTHENTICATED_FULLY}
+        
+        # Toutes les autres routes nécessitent d'être connecté (sauf celles déjà définies)
+        - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
 
 
 
