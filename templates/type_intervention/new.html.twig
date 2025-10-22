@@ -4,16 +4,18 @@
 
 {% block body %}
     <div class="ml-20 min-h-screen bg-gray-50 flex items-center justify-center p-5">
+        <!-- Conteneur principal avec fond dégradé -->
         <div class="bg-gradient-to-b from-blue-200 to-blue-300 rounded-3xl p-10 w-full max-w-md shadow-lg">
             <h1 class="text-center text-3xl font-bold text-gray-800 mb-8">Créer</h1>
 
+            <!-- Inclusion du formulaire -->
             {{ include('type_intervention/_form.html.twig', {'button_label': 'Créer'}) }}
 
-            <a href="{{ path('app_type_intervention_index') }}" class="block text-center mt-5 text-blue-600 hover:underline text-sm">Retour à la liste</a>
-
-            {# <div class="text-center mt-5">
-                {{ include('type_intervention/_delete_form.html.twig') }}
-            </div> #}
+            <!-- Lien de retour -->
+            <a href="{{ path('app_type_intervention_index') }}"
+               class="block text-center mt-5 text-blue-600 hover:underline text-sm">
+                Retour à la liste
+            </a>
         </div>
     </div>
 {% endblock %}
