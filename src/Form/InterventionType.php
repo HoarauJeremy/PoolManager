@@ -93,7 +93,7 @@ class InterventionType extends AbstractType
                 'multiple' => true,
                 'placeholder' => 'Matériels',
                 'attr' => [
-                    'class' => 'bg-white w-full p-2 my-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                    'class' => 'text-center bg-white w-full p-2 my-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
                 ],
             ])
             ->add('client', EntityType::class, [
@@ -105,17 +105,18 @@ class InterventionType extends AbstractType
                 'placeholder' => 'Client',
                 'attr' => [
 
-                    'class' => 'bg-white w-full p-2 my-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                    'class' => 'bg-white w-full my-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
                 ],
             ])
             ->add('technicens', EntityType::class, [
-                'label' => false,
                 'class' => User::class,
-                'choice_label' => 'id',
+                'choice_label' => function (User $user) {
+                    return $user->getNom() . ' ' . $user->getPrenom();
+                }, // Renvoi le nom + le prénom
                 'multiple' => true,
                 'placeholder' => 'Techniciens',
                 'attr' => [
-                    'class' => 'bg-white w-full p-2 my-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                    'class' => 'text-center bg-white w-full p-2 my-4 border border-gray-300  focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
                 ],
             ]);;
     }
