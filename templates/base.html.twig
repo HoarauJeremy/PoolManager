@@ -95,9 +95,9 @@
         </a>
 
         <!-- Icône Calendrier -->
-        <a href="{{ path('app_dashboard') }}">
-            <div class="sidebar-icon">
-                <i class='bx bx-calendar text-2xl text-gray-400'></i>
+        <a href="{{ path('app_calendrier') }}">
+            <div class="sidebar-icon {% if app.request.attributes.get('_route') == 'app_calendrier' %}active{% endif %}">
+                <i class='bx bx-calendar text-2xl {% if app.request.attributes.get('_route') == 'app_calendrier' %}text-white{% else %}text-gray-400{% endif %}'></i>
             </div>
         </a>
     </div>
