@@ -3,7 +3,13 @@
 {% block title %}Inscription{% endblock %}
 
 {% block body %}
-    <div class="max-w-md mx-auto my-10 bg-gradient-to-b from-blue-200 to-blue-300 rounded-3xl px-6 py-8 shadow-lg">
+    <div class="max-w-md mx-auto my-10 bg-gradient-to-b from-blue-200 to-blue-300 rounded-3xl px-6 py-8 shadow-lg relative">
+        <!-- Bouton de retour -->
+        <a href="{{ referer }}" class="absolute top-4 left-4 text-gray-600 hover:text-gray-800 transition-colors" title="Retour">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+        </a>
         <h1 class="text-center text-3xl font-bold mb-7 text-gray-900">Créer un compte</h1>
 
         {{ form_start(registrationForm) }}
@@ -91,6 +97,5 @@
             <button type="submit" class="w-full py-3 bg-blue-500 hover:bg-blue-700 border-0 rounded-xl text-base text-white mt-5 cursor-pointer font-bold transition-colors">S'inscrire</button>
         {{ form_end(registrationForm) }}
 
-        <a href="{{ path('app_login') }}" class="block mt-5 text-center text-sm text-blue-500 hover:underline hover:text-blue-700 no-underline">Déjà un compte ? Connectez-vous</a>
     </div>
 {% endblock %}
