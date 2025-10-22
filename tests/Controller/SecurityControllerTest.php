@@ -55,7 +55,7 @@ class SecurityControllerTest extends WebTestCase
         $this->client->followRedirect();
         
         // Vérifier que l'utilisateur est bien connecté
-        $this->assertSelectorTextContains('h1', 'Bienvenue sur PoolManager');
+        $this->assertSelectorTextContains('h1', 'Mon Tableau de bord');
     }
 
     public function testLoginWithInvalidCredentials(): void
