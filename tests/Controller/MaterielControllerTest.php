@@ -3,21 +3,20 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Materiel;
+use App\Tests\AuthenticatedWebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class MaterielControllerTest extends WebTestCase
+final class MaterielControllerTest extends AuthenticatedWebTestCase
 {
-    private KernelBrowser $client;
     private EntityManagerInterface $manager;
     private EntityRepository $materielRepository;
     private string $path = '/materiel/';
 
     protected function setUp(): void
     {
-        $this->client = static::createClient();
+        parent::setUp(); // Authentifie automatiquement l'utilisateur
+        
         $this->manager = static::getContainer()->get('doctrine')->getManager();
         $this->materielRepository = $this->manager->getRepository(Materiel::class);
 

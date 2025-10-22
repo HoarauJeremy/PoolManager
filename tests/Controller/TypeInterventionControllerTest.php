@@ -4,21 +4,20 @@ namespace App\Tests\Controller;
 
 use App\Entity\TypeIntervention;
 use App\Repository\TypeInterventionRepository;
+use App\Tests\AuthenticatedWebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class TypeInterventionControllerTest extends WebTestCase
+final class TypeInterventionControllerTest extends AuthenticatedWebTestCase
 {
-    private KernelBrowser $client;
     private EntityManagerInterface $manager;
     private EntityRepository $typeInterventionRepository;
     private string $path = '/type/intervention/';
 
     protected function setUp(): void
     {
-        $this->client = static::createClient();
+        parent::setUp(); // Authentifie automatiquement l'utilisateur
+        
         $this->manager = static::getContainer()->get('doctrine')->getManager();
         $this->typeInterventionRepository = $this->manager->getRepository(TypeIntervention::class);
 
