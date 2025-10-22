@@ -1,4 +1,4 @@
-{% extends 'basenologin.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Inscription{% endblock %}
 
@@ -91,6 +91,5 @@
             <button type="submit" class="w-full py-3 bg-blue-500 hover:bg-blue-700 border-0 rounded-xl text-base text-white mt-5 cursor-pointer font-bold transition-colors">S'inscrire</button>
         {{ form_end(registrationForm) }}
 
-        <a href="{{ path('app_login') }}" class="block mt-5 text-center text-sm text-blue-500 hover:underline hover:text-blue-700 no-underline">Déjà un compte ? Connectez-vous</a>
-    </div>
+        </div>
 {% endblock %}
