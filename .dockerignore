@@ -1,21 +1,51 @@
-# Dépendances & artefacts
+# Dépendances (installées pendant le build)
 node_modules
 vendor
-var
+
+# Cache & logs Symfony (recréés en prod)
+var/cache
+var/log
+var/sessions
+
+# Tests & développement
+tests
 coverage
-dist
-build
-.cache
+phpunit.xml.dist
+.phpunit.result.cache
 
 # VCS / IDE / OS
 .git
 .gitignore
 .gitattributes
+.github
 .idea
 .vscode
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
+*~
+
+# Docker
+docker-compose.yml
+docker-compose.override.yml
+Dockerfile.dev
+.dockerignore
 
 # Logs
 logs
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Documentation
+README.md
+CHANGELOG.md
+LICENSE
+docs
+
+# Environnement
+.env.local
+.env.*.local
+.env.test
