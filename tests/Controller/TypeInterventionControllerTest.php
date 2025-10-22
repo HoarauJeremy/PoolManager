@@ -34,7 +34,7 @@ final class TypeInterventionControllerTest extends AuthenticatedWebTestCase
         $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('TypeIntervention index');
+        self::assertPageTitleContains('Liste des Types');
 
         // Use the $crawler to perform additional assertions e.g.
         // self::assertSame('Some text on the page', $crawler->filter('.p')->first()->text());
