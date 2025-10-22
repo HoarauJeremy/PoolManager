@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Contrôleur pour la gestion des utilisateurs
+ * 
+ * Ce contrôleur gère les opérations CRUD pour les utilisateurs, y compris l'affichage,
+ * la création, la modification et la suppression des comptes utilisateurs.
+ * Il est accessible uniquement par les administrateurs.
+ */
+
 namespace App\Controller;
 
 use App\Entity\User;
