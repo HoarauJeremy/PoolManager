@@ -23,6 +23,27 @@ class RegistrationControllerTest extends WebTestCase
         
         // Nettoyer la base de données de test avant chaque test
         $this->entityManager->createQuery('DELETE FROM App\Entity\User u')->execute();
+        
+        // Créer et authentifier un admin pour accéder à la page de registration
+        // (car /register nécessite ROLE_ADMIN dans security.yaml)
+        $admin = $this->createAdminUser();
+        $this->client->loginUser($admin);
+    }
+    
+    private function createAdminUser(): User
+    {
+        $admin = new User();
+        $admin->setEmail('admin@example.com');
+        $admin->setNom('Admin');
+        $admin->setPrenom('User');
+        $admin->setTelGsm('0612345678');
+        $admin->setPassword($this->passwordHasher->hashPassword($admin, 'AdminPassword123!'));
+        $admin->setRoles(['ROLE_ADMIN']);
+        
+        $this->entityManager->persist($admin);
+        $this->entityManager->flush();
+        
+        return $admin;
     }
 
     public function testRegisterPageIsAccessible(): void
@@ -159,6 +180,5 @@ class RegistrationControllerTest extends WebTestCase
         
         // Fermer la connexion à la base de données
         $this->entityManager->close();
-        $this->entityManager = null;
     }
 }

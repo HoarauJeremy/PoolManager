@@ -27,6 +27,9 @@ abstract class AuthenticatedWebTestCase extends WebTestCase
         $entityManager = static::getContainer()->get('doctrine')->getManager();
         $passwordHasher = static::getContainer()->get('security.user_password_hasher');
 
+        // Nettoyer la base de données de test avant de créer l'utilisateur
+        $entityManager->createQuery('DELETE FROM App\Entity\User u')->execute();
+
         $user = new User();
         $user->setEmail('test@example.com');
         $user->setNom('Test');
