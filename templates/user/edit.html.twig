@@ -1,3 +1,13 @@
+{#
+ * Template d'édition d'un utilisateur
+ * 
+ * Ce template affiche un formulaire pour modifier les informations d'un utilisateur existant.
+ * Il inclut la validation des champs et les messages d'erreur associés.
+ *
+ * @var \Symfony\Component\Form\FormView form Le formulaire d'édition
+ * @var App\Entity\User user L'utilisateur en cours de modification
+ #}
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Modifier l'utilisateur {{ user.email }}{% endblock %}

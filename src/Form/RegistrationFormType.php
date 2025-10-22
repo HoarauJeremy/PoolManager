@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Formulaire d'inscription des utilisateurs
+ * 
+ * Ce formulaire est utilisé pour l'inscription des nouveaux utilisateurs.
+ * Il inclut des contraintes de validation pour s'assurer que les données
+ * saisies sont valides et conformes aux exigences de sécurité.
+ */
+
 namespace App\Form;
 
 use App\Entity\User;

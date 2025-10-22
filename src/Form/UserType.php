@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Formulaire de gestion des utilisateurs
+ * 
+ * Ce formulaire est utilisé pour la création et la modification des utilisateurs.
+ * Il inclut les champs nécessaires pour gérer les informations de base d'un utilisateur
+ * ainsi que ses rôles dans l'application.
+ */
+
 namespace App\Form;
 
 use App\Entity\User;
