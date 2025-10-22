@@ -6,15 +6,14 @@ FROM node:20-alpine AS node-builder
 WORKDIR /app
 
 # Copier les fichiers de dépendances Node.js
-COPY package*.json ./
+COPY package.json package-lock.json ./
 
-# Copier les fichiers de configuration (s'ils existent)
-COPY --chown=node:node webpack.config.js* ./
-COPY --chown=node:node tailwind.config.js* ./
-COPY --chown=node:node postcss.config.js* ./
+# Copier les fichiers de configuration
+COPY webpack.config.js ./
+COPY postcss.config.mjs ./
 
-# Installer les dépendances Node.js
-RUN npm ci --only=production=false
+# Installer les dépendances Node.js (inclut dev dependencies pour le build)
+RUN npm ci
 
 # Copier les fichiers nécessaires pour le build
 COPY assets ./assets
