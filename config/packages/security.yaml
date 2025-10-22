@@ -28,7 +28,7 @@ security:
                 post_only: true
                 use_forward: false
                 use_referer: false
-                default_target_path: app_home
+                default_target_path: app_dashboard
             logout:
                 path: app_logout
                 # target: app_home
@@ -43,7 +43,7 @@ security:
     access_control:
         # Routes accessibles à tous, même non connectés
         - { path: ^/login$, roles: PUBLIC_ACCESS }
-        - { path: ^/register, roles: PUBLIC_ACCESS }
+        - { path: ^/register, roles: ROLE_ADMIN }
         - { path: ^/resetting, roles: PUBLIC_ACCESS }
         
         # La route de déconnexion doit être accessible à tous les utilisateurs connectés

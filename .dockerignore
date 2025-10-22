@@ -1,0 +1,21 @@
+# Dépendances & artefacts
+node_modules
+vendor
+var
+coverage
+dist
+build
+.cache
+
+# VCS / IDE / OS
+.git
+.gitignore
+.gitattributes
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+
+# Logs
+logs
+*.log

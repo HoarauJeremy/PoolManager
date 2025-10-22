@@ -3,21 +3,20 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Client;
+use App\Tests\AuthenticatedWebTestCase;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
-use Symfony\Bundle\FrameworkBundle\KernelBrowser;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-final class ClientControllerTest extends WebTestCase
+final class ClientControllerTest extends AuthenticatedWebTestCase
 {
-    private KernelBrowser $client;
     private EntityManagerInterface $manager;
     private EntityRepository $clientRepository;
     private string $path = '/client/';
 
     protected function setUp(): void
     {
-        $this->client = static::createClient();
+        parent::setUp(); // Authentifie automatiquement l'utilisateur
+        
         $this->manager = static::getContainer()->get('doctrine')->getManager();
         $this->clientRepository = $this->manager->getRepository(Client::class);
 
