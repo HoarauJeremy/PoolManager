@@ -70,22 +70,22 @@ if [[ "${RUN_BOOT_TASKS:-0}" == "1" && -f bin/console ]]; then
   ls -la bin/console
   if php bin/console list doctrine:migrations:migrate >/dev/null 2>&1; then
     echo "-> doctrine:migrations:migrate"
-    php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod || true
+    php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env="${APP_ENV}" || true
   else
     echo "-> doctrine:schema:update --force (fallback)"
-    php bin/console doctrine:schema:update --force --no-interaction --env=prod || true
+    php bin/console doctrine:schema:update --force --no-interaction --env="${APP_ENV}" || true
   fi
 
   echo "-> cache:clear & warmup"
-  php bin/console cache:clear --no-warmup --env=prod || true
-  php bin/console cache:warmup --env=prod || true
+  php bin/console cache:clear --no-warmup --env="${APP_ENV}" || true
+  php bin/console cache:warmup --env="${APP_ENV}" || true
 
   echo "-> assets:install"
-  php bin/console assets:install --no-interaction --env=prod || true
+  php bin/console assets:install --no-interaction --env="${APP_ENV}" || true
 
   if [[ "${LOAD_FIXTURES:-0}" == "1" ]] && php bin/console list doctrine:fixtures:load >/dev/null 2>&1; then
     echo "-> doctrine:fixtures:load (one-shot)"
-    php bin/console doctrine:fixtures:load --no-interaction --env=dev || true
+    php bin/console doctrine:fixtures:load --no-interaction --env="${APP_ENV}" || true
   fi
 else
   echo "-> RUN_BOOT_TASKS=0 ou bin/console absent : tâches Symfony ignorées"
