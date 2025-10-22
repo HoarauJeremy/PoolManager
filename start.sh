@@ -7,7 +7,7 @@ APP_ENV="${APP_ENV:-prod}"
 APP_DEBUG="${APP_DEBUG:-0}"
 PORT="${PORT:-80}"
 
-# Choisir l'env selon LOAD_FIXTURES (one-shot)
+# Bascule dev si on charge les fixtures (une seule fois)
 if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
   export APP_ENV=dev
   export APP_DEBUG=1
@@ -17,70 +17,71 @@ else
 fi
 
 echo "FLAGS => APP_ENV=${APP_ENV} RUN_BOOT_TASKS=${RUN_BOOT_TASKS:-0} LOAD_FIXTURES=${LOAD_FIXTURES:-0}"
-php -r 'echo "PHP sees APP_ENV=".getenv("APP_ENV").PHP_EOL;' || true
 
-# --- Healthcheck immédiat (pour que Railway voie vite "OK") ---
+# Healthcheck rapide
 mkdir -p /var/www/html/public
 echo "OK" > /var/www/html/public/healthz
 chown www-data:www-data /var/www/html/public/healthz
 
-# 1) Adapter Apache au port de Railway ($PORT)
+# Apache -> bon port
 if [[ -n "${PORT}" && "${PORT}" != "80" ]]; then
-  echo "-> Apache listen on ${PORT}"
   sed -i "s/Listen 80/Listen ${PORT}/g" /etc/apache2/ports.conf || true
   sed -i "s/\*:80/*:${PORT}/g" /etc/apache2/sites-available/000-default.conf || true
 fi
 
-# 2) Eviter le warning ServerName
+# ServerName
 if [[ ! -f /etc/apache2/conf-available/servername.conf ]]; then
   echo "ServerName localhost" > /etc/apache2/conf-available/servername.conf
   a2enconf servername >/dev/null 2>&1 || true
 fi
 
 cd /var/www/html
-
-# Debug: Vérifier que les fichiers sont présents
 echo "-> Vérification des fichiers"
-ls -la public/ || echo "Dossier public non trouvé"
-ls -la public/index.php || echo "index.php non trouvé"
+ls -la public/ || true
+ls -la public/index.php || true
 
-# 3) Streaming des logs Symfony vers Railway
-echo "-> Configuration du streaming des logs Symfony"
-mkdir -p /var/www/html/var/log
-touch /var/www/html/var/log/prod.log
-chown www-data:www-data /var/www/html/var/log/prod.log
-tail -n 200 -F /var/www/html/var/log/prod.log &
-
-# --- Eviter le 500 si le build Webpack n'a pas encore fini ---
-mkdir -p /var/www/html/public/build
-if [[ ! -f /var/www/html/public/build/entrypoints.json ]]; then
-  echo '{"entrypoints":{}}' > /var/www/html/public/build/entrypoints.json
-  chown www-data:www-data /var/www/html/public/build/entrypoints.json
+# -------- 1) Composer AVANT Apache (pour créer vendor/autoload_runtime.php) --------
+if [[ -f composer.json ]]; then
+  echo "-> composer install (synchrone)"
+  if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
+    composer install --no-interaction --optimize-autoloader
+  else
+    composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
+  fi
 fi
 
+# Logs Symfony
+mkdir -p var/log
+touch var/log/prod.log
+chown -R www-data:www-data var
+tail -n 200 -F var/log/prod.log &
+
+# -------- 2) Stub Encore pour éviter 500 pendant le build --------
+mkdir -p public/build
+if [[ ! -f public/build/entrypoints.json ]]; then
+  # stub avec une entrée "app" vide
+  echo '{"entrypoints":{"app":{"js":[],"css":[]}}}' > public/build/entrypoints.json
+  chown www-data:www-data public/build/entrypoints.json
+fi
+
+# -------- 3) Démarrer Apache (répond au healthcheck tout de suite) --------
 echo "==> start Apache (background)"
-apache2-foreground &         # Apache démarre pour répondre au healthcheck
+apache2-foreground &
 APACHE_PID=$!
 
+# -------- 4) Tout le reste EN ARRIÈRE-PLAN --------
 (
   set -e
-  echo "-> Composer / build / migrations / cache / fixtures en arrière-plan"
+  echo "-> build front / migrations / cache / assets / fixtures (async)"
 
-  # --- FRONT ---
+  # FRONT
   if [[ -f package.json ]]; then
+    # pas de package-lock ? npm ci va râler -> fallback npm install
     (npm ci || npm install --legacy-peer-deps) || true
-    (npm run build || npm run prod) || true   # doit générer public/build/** et entrypoints.json
+    (npm run build || npm run prod) || true
   fi
 
-  # --- BACK ---
-  if [[ -f composer.json ]]; then
-    if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
-      composer install --no-interaction --optimize-autoloader
-    else
-      composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
-    fi
-  fi
-
+  # BACK
   if [[ -f bin/console ]]; then
     php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env="${APP_ENV}" || true
     php bin/console cache:clear --no-warmup --env="${APP_ENV}" || true
@@ -96,5 +97,4 @@ APACHE_PID=$!
   chmod -R 755 /var/www/html
 ) &
 
-# Attendre Apache
 wait "$APACHE_PID"
