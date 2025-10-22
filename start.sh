@@ -16,6 +16,9 @@ else
   export APP_DEBUG=0
 fi
 
+echo "FLAGS => APP_ENV=${APP_ENV} RUN_BOOT_TASKS=${RUN_BOOT_TASKS:-0} LOAD_FIXTURES=${LOAD_FIXTURES:-0}"
+php -r 'echo "PHP sees APP_ENV=".getenv("APP_ENV").PHP_EOL;' || true
+
 # --- Healthcheck immédiat (pour que Railway voie vite "OK") ---
 mkdir -p /var/www/html/public
 echo "OK" > /var/www/html/public/healthz
@@ -65,7 +68,7 @@ fi
 # 5) Maintenance Symfony (migrations, cache, assets) — optionnel
 echo "-> Vérification de bin/console"
 ls -la bin/ || echo "Dossier bin non trouvé"
-if [[ "${RUN_BOOT_TASKS:-0}" == "1" && -f bin/console ]]; then
+if [[ -f bin/console ]]; then
   echo "-> bin/console trouvé, exécution des tâches Symfony essentielles"
   ls -la bin/console
   if php bin/console list doctrine:migrations:migrate >/dev/null 2>&1; then
@@ -83,12 +86,12 @@ if [[ "${RUN_BOOT_TASKS:-0}" == "1" && -f bin/console ]]; then
   echo "-> assets:install"
   php bin/console assets:install --no-interaction --env="${APP_ENV}" || true
 
-  if [[ "${LOAD_FIXTURES:-0}" == "1" ]] && php bin/console list doctrine:fixtures:load >/dev/null 2>&1; then
-    echo "-> doctrine:fixtures:load (one-shot)"
+  if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
+    echo "-> forcing doctrine:fixtures:load (APP_ENV=${APP_ENV})"
     php bin/console doctrine:fixtures:load --no-interaction --env="${APP_ENV}" || true
   fi
 else
-  echo "-> RUN_BOOT_TASKS=0 ou bin/console absent : tâches Symfony ignorées"
+  echo "-> bin/console absent : tâches Symfony ignorées"
 fi
 
 # 6) Permissions
