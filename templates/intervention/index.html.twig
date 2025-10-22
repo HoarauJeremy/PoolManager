@@ -4,9 +4,19 @@
 {% endblock %}
 
 {% block body %}
-	<h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Liste des Interventions</h1>
+	<div class="fixed top-0 left-0 right-0 bg-white shadow-md z-1 py-4 px-6 w">
+		<h1 class="text-3xl font-bold text-blue-600 mb-4 text-center">Liste des Interventions</h1>
+		<div class="text-center">
+			<a href="{{ path('app_intervention_new') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors">
+				Créer une Intervention
+			</a>
+		</div>
+	</div>
 
+	<!-- Ajoutez un espace en haut pour que le contenu ne soit pas caché sous le header fixe -->
+	<div class="h-40"></div>
 	<div class="bg-blue-50 rounded-lg p-6 shadow-lg">
+
 		<div class="overflow-x-auto">
 			<table class="w-full bg-white rounded-lg overflow-hidden">
 				<thead class="bg-blue-500 text-white">
@@ -59,9 +69,7 @@
 				</tbody>
 			</table>
 		</div>
-		<div class="mt-6">
-			<a href="{{ path('app_intervention_new') }}" class="mt-20 text-s font-bold text-blue-600 mb-6 text-center">Créer une Intervention</a>
-		</div>
+
 	</div>
 
 {% endblock %}
