@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+{% block title %}Calendrier - Pool Manager{% endblock %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Calendrier des interventions</h1>
+        <p class="mt-2 text-sm text-gray-600">Visualisez toutes vos interventions planifiées</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+        <div id='calendar'></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const calendarEl = document.getElementById('calendar');
+        const events = {{ events|json_encode|raw }};
+
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'fr',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+            },
+            buttonText: {
+                today: 'Aujourd\'hui',
+                month: 'Mois',
+                week: 'Semaine',
+                day: 'Jour',
+                list: 'Liste'
+            },
+            events: events,
+            eventClick: function(info) {
+                window.location.href = '/intervention/' + info.event.id;
+            },
+            eventContent: function(arg) {
+                let content = '<div class="fc-event-title-container">';
+                content += '<div class="fc-event-title fc-sticky font-semibold">' + arg.event.title + '</div>';
+                if (arg.event.extendedProps.client) {
+                    content += '<div class="text-xs mt-1">' + arg.event.extendedProps.client + '</div>';
+                }
+                content += '</div>';
+                return { html: content };
+            },
+            height: 'auto',
+            nowIndicator: true,
+            navLinks: true,
+            editable: false,
+            dayMaxEvents: true,
+        });
+
+        calendar.render();
+    });
+</script>
+
+<style>
+    .fc {
+        font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    .fc-event {
+        cursor: pointer;
+        border-radius: 4px;
+        border: none !important;
+        padding: 2px 4px;
+    }
+
+    .fc-event:hover {
+        opacity: 0.8;
+    }
+
+    .fc-daygrid-event {
+        margin-top: 2px;
+    }
+</style>
+{% endblock %}
