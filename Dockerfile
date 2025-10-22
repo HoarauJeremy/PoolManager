@@ -6,7 +6,7 @@ FROM node:20-alpine AS node-builder
 WORKDIR /app
 
 # Copier les fichiers de dépendances Node.js
-COPY package.json package-lock.json ./
+COPY package*.json ./
 
 # Copier les fichiers de configuration
 COPY webpack.config.js ./
