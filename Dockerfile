@@ -13,7 +13,8 @@ COPY webpack.config.js ./
 COPY postcss.config.mjs ./
 
 # Installer les dépendances Node.js (inclut dev dependencies pour le build)
-RUN npm ci
+# Utilise npm install au lieu de npm ci pour compatibilité avec environnements de build cloud
+RUN npm install --legacy-peer-deps
 
 # Copier les fichiers nécessaires pour le build
 COPY assets ./assets
