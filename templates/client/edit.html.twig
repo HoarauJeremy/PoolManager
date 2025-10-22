@@ -139,32 +139,35 @@
 
                     {# -- Carte historique : contraste de couleur, typographie claire et lisible -- #}
                     <aside class="rounded-3xl bg-gradient-to-br from-sky-500 via-sky-600 to-blue-700 p-8 text-white shadow-xl">
-                        <h2 class="mb-6 text-2xl font-semibold tracking-wide">Historique</h2>
+                        <h2 class="mb-6 text-2xl font-semibold tracking-wide">Historique des interventions</h2>
 
-                        {# -- Liste des interventions : chaque entrée possède son bloc distinct -- #}
-                        <div class="space-y-4">
-                            <article class="rounded-2xl bg-white/15 p-5 shadow-sm transition hover:bg-white/20">
-                                <p class="text-lg font-semibold">Pool Cleaning - Downtown</p>
-                                <p class="text-sm font-medium text-sky-100">Technicien : Alex Johnson</p>
-                                <p class="mt-2 text-xs uppercase tracking-wide text-sky-100/80">Réalisé le 15 mai 2023</p>
-                            </article>
+                        {% if client.interventions is not empty %}
+                            <div class="space-y-4">
+                                {% for intervention in interventions %}
+                                    <article class="rounded-2xl bg-white/15 p-5 shadow-sm transition hover:bg-white/20">
+                                        <p class="text-lg font-semibold">
+                                            {{ intervention.titre ?? 'Intervention sans titre' }}
+                                        </p>
+                                        <p class="text-sm font-medium text-sky-100">
+                                            Technicien : {{ intervention.technicien ? intervention.technicien.nom ~ ' ' ~ intervention.technicien.prenom : 'Non attribué' }}
+                                        </p>
+                                        <p class="mt-2 text-xs uppercase tracking-wide text-sky-100/80">
+                                            {% if intervention.dateIntervention %}
+                                                Réalisé le {{ intervention.dateIntervention|date('d/m/Y') }}
+                                            {% else %}
+                                                Date non définie
+                                            {% endif %}
+                                        </p>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-sm italic text-sky-100/80">Aucune intervention pour le moment.</p>
+                        {% endif %}
 
-                            <article class="rounded-2xl bg-white/15 p-5 shadow-sm transition hover:bg-white/20">
-                                <p class="text-lg font-semibold">Chemical Check - Northside</p>
-                                <p class="text-sm font-medium text-sky-100">Technicien : Emily Davis</p>
-                                <p class="mt-2 text-xs uppercase tracking-wide text-sky-100/80">Réalisé le 02 juin 2023</p>
-                            </article>
-
-                            <article class="rounded-2xl bg-white/15 p-5 shadow-sm transition hover:bg-white/20">
-                                <p class="text-lg font-semibold">Pump Repair - Riverside</p>
-                                <p class="text-sm font-medium text-sky-100">Technicien : Michael Brown</p>
-                                <p class="mt-2 text-xs uppercase tracking-wide text-sky-100/80">Réalisé le 15 juin 2023</p>
-                            </article>
-                        </div>
-
-                        {# -- Lien secondaire (facultatif) pour compléter la section -- #}
-                        <a href="#"
-                           class="mt-8 inline-flex items-center text-sm font-semibold text-white/90 underline-offset-4 transition hover:text-white hover:underline">
+                        {# -- Lien vers la liste complète (optionnel) -- #}
+                        <a href="{{ path('app_intervention_index', {'client': client.id}) }}"
+                        class="mt-8 inline-flex items-center text-sm font-semibold text-white/90 underline-offset-4 transition hover:text-white hover:underline">
                             Voir toutes les interventions
                         </a>
                     </aside>
