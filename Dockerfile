@@ -33,8 +33,8 @@ WORKDIR /app
 # Copier les fichiers de dépendances Composer
 COPY composer.json composer.lock symfony.lock ./
 
-# Installer les dépendances PHP (production uniquement, optimisé)
-RUN composer install --no-dev --optimize-autoloader --no-scripts --no-interaction --prefer-dist
+# Installer les dépendances PHP (inclut dev dependencies pour fixtures)
+RUN composer install --optimize-autoloader --no-scripts --no-interaction --prefer-dist
 
 # Copier le reste du code pour exécuter les scripts post-install
 COPY . .
@@ -84,16 +84,24 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 # Configuration Apache
 COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
 
+# Copier le script d'entrypoint et convertir les retours à la ligne
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN sed -i 's/\r$//' /usr/local/bin/docker-entrypoint.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh
+
 WORKDIR /var/www/html
 
-# Copier le code source de l'application
+# Copier le code source de l'application (sauf public/build qui sera copié après)
 COPY --chown=www-data:www-data . .
 
 # Copier les dépendances Composer depuis le builder
 COPY --from=composer-builder --chown=www-data:www-data /app/vendor ./vendor
 
-# Copier les node_modules et assets buildés depuis le builder Node
+# Copier les node_modules depuis le builder Node
 COPY --from=node-builder --chown=www-data:www-data /app/node_modules ./node_modules
+
+# Supprimer le dossier public/build local (s'il existe) et copier les assets buildés
+RUN rm -rf ./public/build
 COPY --from=node-builder --chown=www-data:www-data /app/public/build ./public/build
 
 # Variables d'environnement pour production
@@ -113,6 +121,6 @@ RUN php bin/console cache:warmup --env=prod || true
 # S'assurer que les permissions sont correctes après le cache warmup
 RUN chown -R www-data:www-data var
 
-# Ports & CMD Apache
+# Ports & ENTRYPOINT
 EXPOSE 80
-CMD ["apache2-foreground"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
