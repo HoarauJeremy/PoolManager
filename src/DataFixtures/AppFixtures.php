@@ -32,6 +32,15 @@ class AppFixtures extends Fixture
             $types[] = $type;
         }
 
+        // Création de l'administrateur
+        $admin = new User();
+        $admin->setEmail('admin@poolmanager.com');
+        $admin->setNom('Admin');
+        $admin->setPrenom('Administrateur');
+        $admin->setPassword(password_hash('admin123', PASSWORD_DEFAULT));
+        $admin->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
+        $manager->persist($admin);
+
         // Création des utilisateurs (techniciens)
         $users = [];
         $usersData = [
