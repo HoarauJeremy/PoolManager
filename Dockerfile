@@ -32,6 +32,9 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-av
 # Répertoire de travail (le code sera monté en volume)
 WORKDIR /var/www/html
 
+# s'assurer que start.sh est présent dans l'image
+COPY ./start.sh /usr/local/bin/start.sh
+
 # Droits par défaut (le volume prendra le dessus)
 RUN chown -R www-data:www-data /var/www/html
 
