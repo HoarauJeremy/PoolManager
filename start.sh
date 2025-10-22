@@ -56,7 +56,7 @@ fi
 # 5) Maintenance Symfony (migrations, cache, assets) — optionnel
 echo "-> Vérification de bin/console"
 ls -la bin/ || echo "Dossier bin non trouvé"
-if [[ -f bin/console ]]; then
+if [[ "${RUN_BOOT_TASKS:-0}" == "1" && -f bin/console ]]; then
   echo "-> bin/console trouvé, exécution des tâches Symfony essentielles"
   ls -la bin/console
   if php bin/console list doctrine:migrations:migrate >/dev/null 2>&1; then
@@ -74,21 +74,25 @@ if [[ -f bin/console ]]; then
   echo "-> assets:install"
   php bin/console assets:install --no-interaction --env=prod || true
 
-  # Charger les fixtures seulement si RUN_BOOT_TASKS=1
-  if [[ "${RUN_BOOT_TASKS:-0}" == "1" ]]; then
-    echo "-> doctrine:fixtures:load (première fois uniquement)"
+  if php bin/console list doctrine:fixtures:load >/dev/null 2>&1; then
+    echo "-> doctrine:fixtures:load (si bundle actif)"
     php bin/console doctrine:fixtures:load --no-interaction --env=prod || true
-  else
-    echo "-> Fixtures ignorées (RUN_BOOT_TASKS=0)"
   fi
 else
-  echo "-> bin/console non trouvé, tâches Symfony ignorées"
+  echo "-> RUN_BOOT_TASKS=0 ou bin/console absent : tâches Symfony ignorées"
 fi
 
 # 6) Permissions
 echo "-> Configuration des permissions"
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
+
+# 7) Streaming des logs Symfony vers Railway
+echo "-> Configuration du streaming des logs Symfony"
+mkdir -p /var/www/html/var/log
+touch /var/www/html/var/log/prod.log
+chown www-data:www-data /var/www/html/var/log/prod.log
+tail -n 200 -F /var/www/html/var/log/prod.log &
 
 echo "==> start Apache"
 exec apache2-foreground
