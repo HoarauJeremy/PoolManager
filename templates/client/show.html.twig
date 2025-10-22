@@ -1,55 +1,134 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Client - {{ client.nom }} {{ client.prenom }}{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        
-    </style>
-{% endblock %}
+{% block title %}Profil client{% endblock %}
 
 {% block body %}
-<div class="client-container">
-    <article class="client-card" aria-labelledby="client-title">
-        <h1 id="client-title">
-            {{ client.nom }} {{ client.prenom }}
-        </h1>
-        <ul class="client-info-list">
-            <li>
-                <span class="client-label">Id</span>
-                <span class="client-value">{{ client.id }}</span>
-            </li>
-            <li>
-                <span class="client-label">Email</span>
-                <span class="client-value">{{ client.email }}</span>
-            </li>
-            <li>
-                <span class="client-label">Adresse</span>
-                <span class="client-value">{{ client.adresse }}</span>
-            </li>
-            <li>
-                <span class="client-label">Ville</span>
-                <span class="client-value">{{ client.ville }}</span>
-            </li>
-            <li>
-                <span class="client-label">Code Postal</span>
-                <span class="client-value">{{ client.codePostal }}</span>
-            </li>
-            <li>
-                <span class="client-label">Tél. fixe</span>
-                <span class="client-value">{{ client.telFixe ?? '-' }}</span>
-            </li>
-            <li>
-                <span class="client-label">Tél. GSM</span>
-                <span class="client-value">{{ client.telGsm ?? '-' }}</span>
-            </li>
-        </ul>
-        <nav class="actions" aria-label="actions client">
-            <a href="{{ path('app_client_index') }}" class="action-link secondary">← Retour</a>
-            <a href="{{ path('app_client_edit', {'id': client.id}) }}" class="action-link">Éditer</a>
-            <span class="action-form">{{ include('client/_delete_form.html.twig') }}</span>
-        </nav>
-    </article>
-</div>
+    {# -- Arrière-plan : léger dégradé plein écran pour un rendu doux et moderne -- #}
+    <section class="min-h-screen bg-gradient-to-b from-sky-100 via-white to-sky-100 py-16">
+        <div class="px-4">
+            {# -- Conteneur principal centré avec largeur max contrôlée -- #}
+            <div class="mx-auto flex max-w-6xl flex-col gap-10">
+                <header class="text-center">
+                    <h1 class="text-4xl font-bold tracking-tight text-slate-900 sm:text-5xl">
+                        Client Profile
+                    </h1>
+                    <p class="mt-2 text-base text-slate-500">
+                        Gérez les informations client et consultez l’historique des interventions d’un seul regard.
+                    </p>
+                </header>
+
+                {# -- Grille responsives : carte infos (col-span-2) + carte historique (col-span-1) -- #}
+                <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+                    {# -- Carte d’affichage : fond translucide, flou léger, bords arrondis -- #}
+                    <div class="lg:col-span-2 rounded-3xl bg-white/80 p-10 shadow-xl backdrop-blur-sm">
+                        {# -- Bandeau identitaire du client (avatar + résumé) -- #}
+                        <div class="mb-10 flex flex-col gap-6 rounded-2xl bg-white/70 p-6 shadow-inner sm:flex-row sm:items-center">
+                            <img
+                                src="{{ asset('images/default-avatar.png') }}"
+                                alt="Avatar du client"
+                                class="h-20 w-20 shrink-0 rounded-full border border-sky-200 object-cover shadow-md"
+                            >
+                            <div>
+                                <p class="text-sm font-semibold uppercase tracking-wide text-slate-500">
+                                    Client
+                                </p>
+                                <p class="text-2xl font-bold text-slate-900">
+                                    {{ ((client.prenom ?? '') ~ ' ' ~ (client.nom ?? ''))|trim ?: 'Nom du client' }}
+                                </p>
+                                <p class="text-sm font-medium text-slate-500">
+                                    {{ client.email ?: 'client@example.com' }}
+                                </p>
+                            </div>
+                        </div>
+
+                        {# -- Classes réutilisables pour les lignes statiques -- #}
+                        {% set field_row_classes = 'space-y-1' %}
+                        {% set label_classes = 'block text-sm font-semibold text-slate-600' %}
+                        {% set value_classes = 'w-full rounded-2xl border border-transparent bg-gray-100 px-4 py-3 text-base font-medium text-gray-600 shadow-sm ring-1 ring-gray-300' %}
+
+                        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+                            <div class="{{ field_row_classes }}">
+                                <p class="{{ label_classes }}">Nom</p>
+                                <p class="{{ value_classes }}">{{ client.nom }}</p>
+                            </div>
+                            <div class="{{ field_row_classes }}">
+                                <p class="{{ label_classes }}">Prénom</p>
+                                <p class="{{ value_classes }}">{{ client.prenom }}</p>
+                            </div>
+                            <div class="{{ field_row_classes }}">
+                                <p class="{{ label_classes }}">Email</p>
+                                <p class="{{ value_classes }} lowercase">{{ client.email }}</p>
+                            </div>
+                            <div class="{{ field_row_classes }}">
+                                <p class="{{ label_classes }}">Adresse</p>
+                                <p class="{{ value_classes }}">{{ client.adresse }}</p>
+                            </div>
+                            <div class="{{ field_row_classes }}">
+                                <p class="{{ label_classes }}">Ville</p>
+                                <p class="{{ value_classes }} capitalize">{{ client.ville }}</p>
+                            </div>
+                            <div class="{{ field_row_classes }}">
+                                <p class="{{ label_classes }}">Code postal</p>
+                                <p class="{{ value_classes }} tracking-[0.15em] uppercase">{{ client.codePostal }}</p>
+                            </div>
+                            <div class="{{ field_row_classes }}">
+                                <p class="{{ label_classes }}">Téléphone fixe</p>
+                                <p class="{{ value_classes }}">{{ client.telFixe }}</p>
+                            </div>
+                            <div class="{{ field_row_classes }}">
+                                <p class="{{ label_classes }}">Téléphone mobile</p>
+                                <p class="{{ value_classes }}">{{ client.telGsm }}</p>
+                            </div>
+                        </div>
+
+                        {# -- Lien retour en bas de la carte -- #}
+                        <div class="mt-6">
+                            <a href="{{ path('app_client_index') }}"
+                               class="inline-flex items-center text-sm font-semibold text-sky-700 transition hover:-translate-y-0.5 hover:text-sky-900">
+                                ⟵ Retour à la liste
+                            </a>
+                        </div>
+                    </div>
+
+                    {# -- Carte historique : contraste de couleur, typographie claire et lisible -- #}
+                    <aside class="rounded-3xl bg-gradient-to-br from-sky-500 via-sky-600 to-blue-700 p-8 text-white shadow-xl">
+                        <h2 class="mb-6 text-2xl font-semibold tracking-wide">Historique des interventions</h2>
+
+                        {% if client.interventions is not empty %}
+                            <div class="space-y-4">
+                                {% for intervention in client.interventions %}
+                                    <article class="rounded-2xl bg-white/15 p-5 shadow-sm transition hover:bg-white/20">
+                                        <p class="text-lg font-semibold">
+                                            {{ intervention.libelle ?: 'Intervention sans titre' }}
+                                        </p>
+                                        <p class="text-sm font-medium text-sky-100">
+                                            Technicien :
+                                            {{ intervention.technicens
+                                                ? intervention.technicens.first.nom ~ ' ' ~ intervention.technicens.first.prenom
+                                                : 'Non attribué'
+                                            }}
+                                        </p>
+                                        <p class="mt-2 text-xs uppercase tracking-wide text-sky-100/80">
+                                            {% if intervention.dateDebut %}
+                                                Réalisé le {{ intervention.dateDebut|date('d/m/Y') }}
+                                            {% else %}
+                                                Date non définie
+                                            {% endif %}
+                                        </p>
+                                    </article>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <p class="text-sm italic text-sky-100/80">Aucune intervention pour le moment.</p>
+                        {% endif %}
+
+                        <a href="{{ path('app_intervention_index', {'client': client.id}) }}"
+                           class="mt-8 inline-flex items-center text-sm font-semibold text-white/90 underline-offset-4 transition hover:text-white hover:underline">
+                            Voir toutes les interventions
+                        </a>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </section>
 {% endblock %}
