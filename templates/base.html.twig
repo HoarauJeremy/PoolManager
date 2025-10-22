@@ -43,6 +43,13 @@
                 min-height: 100vh;
                 width: calc(100% - 5rem);
             }
+
+            .main-content-full {
+                margin-left: 0;
+                padding: 0;
+                min-height: 100vh;
+                width: 100%;
+            }
         </style>
     {% endblock %}
 
@@ -51,10 +58,14 @@
     {% endblock %}
 </head>
 <body>
+{% set currentPath = app.request.pathinfo %}
+{% set hideNavbar = currentPath matches '/^\\/login/' or currentPath matches '/^\\/register/' %}
+
+{% if not hideNavbar %}
 <!-- Sidebar -->
 <div class="sidebar w-20 flex flex-col items-center py-8 fixed h-screen z-10">
     <!-- Navigation Icons -->
-    <div class="flex flex-col items-center space-y-6">
+    <div class="flex flex-col items-center space-y-8">
         <!-- Logo Dashboard -->
         <a href="{{ path('app_dashboard') }}">
             <div class="sidebar-icon {% if app.request.attributes.get('_route') == 'app_dashboard' %}active{% endif %}">
@@ -100,7 +111,9 @@
         </a>
     </div>
 </div>
-<div class="main-content">
+{% endif %}
+
+<div class="{% if hideNavbar %}main-content-full{% else %}main-content{% endif %}">
     {% block body %}{% endblock %}
 </div>
 </body>
