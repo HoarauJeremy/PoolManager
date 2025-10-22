@@ -143,17 +143,17 @@
 
                         {% if client.interventions is not empty %}
                             <div class="space-y-4">
-                                {% for intervention in interventions %}
+                                {% for intervention in client.interventions %}
                                     <article class="rounded-2xl bg-white/15 p-5 shadow-sm transition hover:bg-white/20">
                                         <p class="text-lg font-semibold">
-                                            {{ intervention.titre ?? 'Intervention sans titre' }}
+                                            {{ intervention.libelle ?? 'Intervention sans titre' }}
                                         </p>
                                         <p class="text-sm font-medium text-sky-100">
-                                            Technicien : {{ intervention.technicien ? intervention.technicien.nom ~ ' ' ~ intervention.technicien.prenom : 'Non attribué' }}
+                                            Technicien : {{ intervention.technicens ? intervention.technicens.first.nom ~ ' ' ~ intervention.technicens.first.prenom : 'Non attribué' }}
                                         </p>
                                         <p class="mt-2 text-xs uppercase tracking-wide text-sky-100/80">
-                                            {% if intervention.dateIntervention %}
-                                                Réalisé le {{ intervention.dateIntervention|date('d/m/Y') }}
+                                            {% if intervention.dateDebut %}
+                                                Réalisé le {{ intervention.dateDebut|date('d/m/Y') }}
                                             {% else %}
                                                 Date non définie
                                             {% endif %}
