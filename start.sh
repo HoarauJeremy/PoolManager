@@ -88,7 +88,9 @@ if [[ -f bin/console ]]; then
 
   if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
     echo "-> forcing doctrine:fixtures:load (APP_ENV=${APP_ENV})"
-    php bin/console doctrine:fixtures:load --no-interaction --env="${APP_ENV}" || true
+    # php bin/console doctrine:fixtures:load --no-interaction --env="${APP_ENV}" || true
+    php -d memory_limit=-1 bin/console doctrine:fixtures:load \
+  --no-interaction -vvv --env="${APP_ENV}"
   fi
 else
   echo "-> bin/console absent : tâches Symfony ignorées"
