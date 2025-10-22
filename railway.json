@@ -5,7 +5,12 @@
     "dockerfilePath": "Dockerfile"
     },
   "deploy": {
-    "preDeployCommand": ["npm i", "npm run build", "composer i", "symfony console d:migrations:migrate"],
+    "preDeployCommand": [
+        "npm i",
+        "npm run build",
+        "composer i", 
+        "symfony console d:migrations:migrate"
+    ],
     "startCommand": "echo starting!",
     "healthcheckPath": "/",
     "healthcheckTimeout": 100,
