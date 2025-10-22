@@ -7,9 +7,14 @@ APP_ENV="${APP_ENV:-prod}"
 APP_DEBUG="${APP_DEBUG:-0}"
 PORT="${PORT:-80}"
 
-# Forcer le mode production (même si Railway impose dev)
-export APP_ENV=prod
-export APP_DEBUG=0
+# Choisir l'env selon LOAD_FIXTURES (one-shot)
+if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
+  export APP_ENV=dev
+  export APP_DEBUG=1
+else
+  export APP_ENV=prod
+  export APP_DEBUG=0
+fi
 
 # --- Healthcheck immédiat (pour que Railway voie vite "OK") ---
 mkdir -p /var/www/html/public
@@ -38,8 +43,12 @@ ls -la public/index.php || echo "index.php non trouvé"
 
 # 3) Installation des dépendances (obligatoire)
 if [[ -f composer.json ]]; then
-  echo "-> composer install (no-dev)"
-  composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
+  echo "-> composer install"
+  if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
+    composer install --no-interaction --optimize-autoloader
+  else
+    composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
+  fi
 fi
 
 if [[ -f package.json && ! -d node_modules ]]; then
@@ -74,9 +83,9 @@ if [[ "${RUN_BOOT_TASKS:-0}" == "1" && -f bin/console ]]; then
   echo "-> assets:install"
   php bin/console assets:install --no-interaction --env=prod || true
 
-  if php bin/console list doctrine:fixtures:load >/dev/null 2>&1; then
-    echo "-> doctrine:fixtures:load (si bundle actif)"
-    php bin/console doctrine:fixtures:load --no-interaction --env=prod || true
+  if [[ "${LOAD_FIXTURES:-0}" == "1" ]] && php bin/console list doctrine:fixtures:load >/dev/null 2>&1; then
+    echo "-> doctrine:fixtures:load (one-shot)"
+    php bin/console doctrine:fixtures:load --no-interaction --env=dev || true
   fi
 else
   echo "-> RUN_BOOT_TASKS=0 ou bin/console absent : tâches Symfony ignorées"
