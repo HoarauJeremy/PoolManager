@@ -4,6 +4,7 @@ namespace App\DataFixtures;
 
 use App\Entity\Client;
 use App\Entity\Intervention;
+use App\Entity\Materiel;
 use App\Entity\TypeIntervention;
 use App\Entity\User;
 use App\Enum\Status;
@@ -30,6 +31,120 @@ class AppFixtures extends Fixture
             $type->setNom($nomType);
             $manager->persist($type);
             $types[] = $type;
+        }
+
+        // Création des matériels
+        $materiels = [];
+        $materielsData = [
+            [
+                'libelle' => 'Chlore liquide',
+                'quantite' => 25,
+                'description' => 'Chlore liquide pour traitement de l\'eau de piscine. Dosage : 1L pour 10m³ d\'eau. Stockage à l\'abri de la lumière.'
+            ],
+            [
+                'libelle' => 'Chlore en pastilles',
+                'quantite' => 50,
+                'description' => 'Pastilles de chlore à dissolution lente. 1 pastille pour 20m³ d\'eau. Durée d\'action : 7 jours.'
+            ],
+            [
+                'libelle' => 'Filtre à sable',
+                'quantite' => 8,
+                'description' => 'Filtre à sable pour piscine. Capacité de filtration : 10m³/h. Nécessite un lavage à contre-courant régulier.'
+            ],
+            [
+                'libelle' => 'Filtre à cartouche',
+                'quantite' => 15,
+                'description' => 'Cartouche filtrante jetable. Filtration fine pour eau cristalline. Remplacement tous les 3 mois.'
+            ],
+            [
+                'libelle' => 'Pompe de circulation',
+                'quantite' => 6,
+                'description' => 'Pompe de circulation pour piscine. Débit : 15m³/h. Moteur étanche, résistant à l\'eau.'
+            ],
+            [
+                'libelle' => 'Robot nettoyeur',
+                'quantite' => 4,
+                'description' => 'Robot automatique pour nettoyage du fond et des parois. Autonome, programmation possible.'
+            ],
+            [
+                'libelle' => 'Épuisette',
+                'quantite' => 12,
+                'description' => 'Épuisette pour récupération des débris flottants. Manche télescopique, filet résistant.'
+            ],
+            [
+                'libelle' => 'Brosse de paroi',
+                'quantite' => 10,
+                'description' => 'Brosse pour nettoyage manuel des parois. Manche télescopique, poils résistants aux produits chimiques.'
+            ],
+            [
+                'libelle' => 'Tuyau d\'aspiration',
+                'quantite' => 8,
+                'description' => 'Tuyau flexible pour aspiration des débris. Diamètre 38mm, longueur 10m. Résistant aux produits chimiques.'
+            ],
+            [
+                'libelle' => 'Testeur de pH',
+                'quantite' => 5,
+                'description' => 'Appareil de mesure du pH de l\'eau. Précision ±0.1 pH. Calibration automatique.'
+            ],
+            [
+                'libelle' => 'Testeur de chlore',
+                'quantite' => 5,
+                'description' => 'Testeur électronique de taux de chlore. Mesure en ppm. Affichage digital, étalonnage simple.'
+            ],
+            [
+                'libelle' => 'Algicide',
+                'quantite' => 20,
+                'description' => 'Produit anti-algues pour piscine. Prévention et traitement. Dosage : 100ml pour 10m³ d\'eau.'
+            ],
+            [
+                'libelle' => 'Floculant',
+                'quantite' => 15,
+                'description' => 'Produit de floculation pour clarifier l\'eau trouble. Agglomère les particules fines. Dosage selon turbidité.'
+            ],
+            [
+                'libelle' => 'Bâche de protection',
+                'quantite' => 6,
+                'description' => 'Bâche de protection hivernale. Matériau PVC renforcé. Dimensions : 8x4m. Résistante aux UV.'
+            ],
+            [
+                'libelle' => 'Bâche à bulles',
+                'quantite' => 8,
+                'description' => 'Bâche à bulles pour réchauffement de l\'eau. Réduit l\'évaporation et maintient la température.'
+            ],
+            [
+                'libelle' => 'Échelle de piscine',
+                'quantite' => 4,
+                'description' => 'Échelle d\'accès en acier inoxydable. 3 marches, fixation parfaite. Charge max : 150kg.'
+            ],
+            [
+                'libelle' => 'Gants de protection',
+                'quantite' => 20,
+                'description' => 'Gants en nitrile pour manipulation des produits chimiques. Taille unique, boîte de 100 paires.'
+            ],
+            [
+                'libelle' => 'Masque de protection',
+                'quantite' => 10,
+                'description' => 'Masque respiratoire pour vapeurs chimiques. Filtre A2P3. Confort d\'utilisation optimal.'
+            ],
+            [
+                'libelle' => 'Trousse de réparation',
+                'quantite' => 6,
+                'description' => 'Kit de réparation pour liner de piscine. Patchs adhésifs, colle spéciale. Résistant à l\'eau.'
+            ],
+            [
+                'libelle' => 'Thermomètre flottant',
+                'quantite' => 12,
+                'description' => 'Thermomètre flottant pour mesure de température d\'eau. Affichage digital, étanche.'
+            ]
+        ];
+
+        foreach ($materielsData as $materielData) {
+            $materiel = new Materiel();
+            $materiel->setLibelle($materielData['libelle']);
+            $materiel->setQuantite($materielData['quantite']);
+            $materiel->setDescription($materielData['description']);
+            $manager->persist($materiel);
+            $materiels[] = $materiel;
         }
 
         // Création de l'administrateur
@@ -188,6 +303,7 @@ class AppFixtures extends Fixture
 
         echo "Fixtures chargées avec succès !\n";
         echo "- " . count($types) . " types d'intervention\n";
+        echo "- " . count($materiels) . " matériels\n";
         echo "- " . count($users) . " utilisateurs\n";
         echo "- " . count($clients) . " clients\n";
         echo "- " . $interventionsCount . " interventions\n";
