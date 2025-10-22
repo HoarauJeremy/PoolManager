@@ -51,6 +51,13 @@ touch /var/www/html/var/log/prod.log
 chown www-data:www-data /var/www/html/var/log/prod.log
 tail -n 200 -F /var/www/html/var/log/prod.log &
 
+# --- Eviter le 500 si le build Webpack n'a pas encore fini ---
+mkdir -p /var/www/html/public/build
+if [[ ! -f /var/www/html/public/build/entrypoints.json ]]; then
+  echo '{"entrypoints":{}}' > /var/www/html/public/build/entrypoints.json
+  chown www-data:www-data /var/www/html/public/build/entrypoints.json
+fi
+
 echo "==> start Apache (background)"
 apache2-foreground &         # Apache démarre pour répondre au healthcheck
 APACHE_PID=$!
