@@ -29,17 +29,20 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
     && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}/!g' /etc/apache2/apache2.conf
 
-# Répertoire de travail (le code sera monté en volume)
+# Répertoire de travail
 WORKDIR /var/www/html
+
+# Copier le code source de l'application
+COPY . /var/www/html/
 
 # s'assurer que start.sh est présent dans l'image
 COPY ./start.sh /usr/local/bin/start.sh
 
-# Droits par défaut (le volume prendra le dessus)
+# Droits par défaut
 RUN chown -R www-data:www-data /var/www/html
 
 COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
 
 # Ports & CMD Apache
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["/usr/local/bin/start.sh"]
