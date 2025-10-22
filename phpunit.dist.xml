@@ -15,6 +15,7 @@
         <server name="APP_ENV" value="test" force="true" />
         <server name="SHELL_VERBOSITY" value="-1" />
         <env name="KERNEL_CLASS" value="App\Kernel" />
+        <env name="DEFAULT_URI" value="http://localhost" />
     </php>
 
     <testsuites>
