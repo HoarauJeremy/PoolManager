@@ -4,7 +4,7 @@ services:
       context: .
     container_name: pool-manager
     ports:
-      - "8000:80"
+      - "8080:80"
     volumes:
       - ./:/var/www/html:delegated   # code seulement
       - symfony_cache:/var/www/html/var/cache
