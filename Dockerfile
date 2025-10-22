@@ -48,6 +48,3 @@ COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
 EXPOSE 80
 CMD ["/usr/local/bin/start.sh"]
 
-# Copier le script de démarrage
-COPY ./start.sh /usr/local/bin/start.sh
-RUN chmod +x /usr/local/bin/start.sh
