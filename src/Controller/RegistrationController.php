@@ -23,9 +23,9 @@ class RegistrationController extends AbstractController
         $loginUrl = $this->generateUrl('app_login');
         $registerUrl = $this->generateUrl('app_register');
         
-        // Si la référence est la page de connexion ou d'inscription, on utilise la page d'accueil
+        // Si la référence est la page de connexion ou d'inscription, on utilise le dashboard
         if (str_contains($referer, $loginUrl) || str_contains($referer, $registerUrl) || empty($referer)) {
-            $referer = $this->generateUrl('app_home');
+            $referer = $this->generateUrl('app_dashboard');
         }
 
         $user = new User();

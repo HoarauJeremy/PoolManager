@@ -134,8 +134,8 @@ class SecurityControllerTest extends WebTestCase
         // Essayer d'accéder à la page de connexion
         $this->client->request('GET', $this->loginPath);
         
-        // Vérifier la redirection vers la page d'accueil
-        $this->assertResponseRedirects('/');
+        // Vérifier la redirection vers le dashboard
+        $this->assertResponseRedirects('/dashboard');
     }
 
     /**
