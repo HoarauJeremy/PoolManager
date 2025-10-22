@@ -55,6 +55,11 @@ jobs:
     - name: Install Dependencies
       run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
     
+    - name: Create Database
+      env:
+        DATABASE_URL: mysql://root:root@127.0.0.1:3306/test_db?serverVersion=8.0
+      run: php bin/console doctrine:database:create --env=test
+    
     - name: Run Migrations
       env:
         DATABASE_URL: mysql://root:root@127.0.0.1:3306/test_db?serverVersion=8.0
