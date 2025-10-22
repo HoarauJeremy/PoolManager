@@ -47,7 +47,7 @@ if [[ -f package.json ]]; then
 fi
 
 # 5) Maintenance Symfony (migrations, cache, assets)
-if [[ -f bin/console ]]; then
+if [[ "${RUN_BOOT_TASKS:-0}" == "1" && -f bin/console ]]; then
   if php bin/console list doctrine:migrations:migrate >/dev/null 2>&1; then
     echo "-> doctrine:migrations:migrate"
     php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod
