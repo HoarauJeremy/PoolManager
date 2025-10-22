@@ -51,7 +51,13 @@ security:
         
         # Section admin réservée aux administrateurs
         - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/admin, roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/intervention/new, roles: ROLE_ADMIN }
+        - { path: ^/intervention/\d+/edit, roles: ROLE_ADMIN }
+        - { path: ^/type/intervention/new, roles: ROLE_ADMIN }
+        - { path: ^/type/intervention/\d+/edit, roles: ROLE_ADMIN }
+        - { path: ^/client/new, roles: ROLE_ADMIN }
+        - { path: ^/client/\d+/edit, roles: ROLE_ADMIN }
+
         
         # Toutes les autres routes nécessitent d'être connecté
         - { path: ^/, roles: IS_AUTHENTICATED_FULLY }
