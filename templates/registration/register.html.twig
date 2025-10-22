@@ -61,10 +61,25 @@
                 {{ form_errors(registrationForm.plainPassword) }}
             </div>
 
-            <div class="mt-4 flex items-center">
-                {{ form_widget(registrationForm.agreeTerms, {'attr': {'class': 'mr-2'}}) }}
-                {{ form_label(registrationForm.agreeTerms, 'J\'accepte les conditions d\'utilisation', {'label_attr': {'class': 'text-sm text-gray-700'}}) }}
-                {{ form_errors(registrationForm.agreeTerms) }}
+            <div class="mt-4 mb-6">
+                <div class="inline-flex items-center">
+                    <label class="relative flex items-center p-1.5 rounded-full cursor-pointer" for="{{ registrationForm.agreeTerms.vars.id }}">
+                        {{ form_widget(registrationForm.agreeTerms, {'attr': {
+                            'class': 'before:content[" "] peer relative h-5 w-5 cursor-pointer appearance-none rounded-md border border-blue-gray-200 transition-all before:absolute before:top-2/4 before:left-2/4 before:block before:h-12 before:w-12 before:-translate-y-2/4 before:-translate-x-2/4 before:rounded-full before:bg-blue-gray-500 before:opacity-0 before:transition-opacity checked:border-blue-500 checked:bg-blue-500 checked:before:bg-blue-500 hover:before:opacity-10'
+                        }}) }}
+                        <span class="absolute text-white transition-opacity opacity-0 pointer-events-none top-2/4 left-2/4 -translate-y-2/4 -translate-x-2/4 peer-checked:opacity-100">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor" stroke-width="1">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </span>
+                    </label>
+                    <label for="{{ registrationForm.agreeTerms.vars.id }}" class="ml-2 text-sm font-medium text-gray-700 cursor-pointer select-none">
+                        J'accepte les <a href="#" class="text-blue-500 hover:underline">conditions d'utilisation</a>
+                    </label>
+                </div>
+                {% if registrationForm.agreeTerms.vars.errors|length > 0 %}
+                    <p class="mt-1 text-sm text-red-600">{{ form_errors(registrationForm.agreeTerms) }}</p>
+                {% endif %}
             </div>
 
             <button type="submit" class="w-full py-3 bg-blue-500 hover:bg-blue-700 border-0 rounded-xl text-base text-white mt-5 cursor-pointer font-bold transition-colors">S'inscrire</button>
