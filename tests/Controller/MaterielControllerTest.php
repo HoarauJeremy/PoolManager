@@ -33,7 +33,7 @@ final class MaterielControllerTest extends AuthenticatedWebTestCase
         $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Materiel index');
+        self::assertPageTitleContains('Liste des Matériels');
 
         // Use the $crawler to perform additional assertions e.g.
         // self::assertSame('Some text on the page', $crawler->filter('.p')->first()->text());

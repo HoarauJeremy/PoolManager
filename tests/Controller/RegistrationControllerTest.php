@@ -49,6 +49,13 @@ class RegistrationControllerTest extends WebTestCase
     public function testRegisterPageIsAccessible(): void
     {
         $this->client->request('GET', $this->path);
+        
+        // Debug: afficher le code de statut et le contenu si ça échoue
+        if ($this->client->getResponse()->getStatusCode() !== 200) {
+            echo "Status Code: " . $this->client->getResponse()->getStatusCode() . "\n";
+            echo "Content: " . $this->client->getResponse()->getContent() . "\n";
+        }
+        
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Créer un compte');
     }
