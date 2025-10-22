@@ -1,11 +1,22 @@
+{# On étend le layout principal du projet (souvent base.html.twig) #}
 {% extends 'base.html.twig' %}
 
+{# Définition du titre de la page (affiché dans l’onglet du navigateur) #}
 {% block title %}Intervention index
 {% endblock %}
 
 {% block body %}
-	<div class="fixed top-0 left-0 right-0 bg-white shadow-md z-1 py-4 px-6 w">
-		<h1 class="text-3xl font-bold text-blue-600 mb-4 text-center">Liste des Interventions</h1>
+	{# =======================
+		   ✅ En-tête fixe en haut de la page
+		   ======================= #}
+	<div
+		class="fixed top-0 left-0 right-0 bg-white shadow-md z-1 py-4 px-6 w">
+		{# Titre principal #}
+		<h1 class="text-3xl font-bold text-blue-600 mb-4 text-center">
+			Liste des Interventions
+		</h1>
+
+		{# Bouton pour créer une nouvelle intervention #}
 		<div class="text-center">
 			<a href="{{ path('app_intervention_new') }}" class="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors">
 				Créer une Intervention
@@ -13,15 +24,26 @@
 		</div>
 	</div>
 
-	<!-- Ajoutez un espace en haut pour que le contenu ne soit pas caché sous le header fixe -->
+	{# Ajoute un espace sous le header fixe pour éviter que le contenu soit masqué #}
 	<div class="h-40"></div>
-	<div class="bg-blue-50 rounded-lg p-6 shadow-lg">
 
-		<div class="overflow-x-auto">
-			<table class="w-full bg-white rounded-lg overflow-hidden">
+	{# Conteneur principal du tableau, avec fond bleu clair et ombre #}
+	<div
+		class="bg-blue-50 rounded-lg p-6 shadow-lg">
+
+		{# Permet un défilement horizontal si le tableau dépasse la largeur #}
+		<div
+			class="overflow-x-auto">
+
+			{# =======================
+						   📋 Tableau des interventions
+						   ======================= #}
+			<table
+				class="w-full bg-white rounded-lg overflow-hidden">
+
+				{# En-tête du tableau #}
 				<thead class="bg-blue-500 text-white">
 					<tr>
-
 						<th class="px-4 py-3 text-left text-sm font-semibold">Libelle</th>
 						<th class="px-4 py-3 text-left text-sm font-semibold">Date début</th>
 						<th class="px-4 py-3 text-left text-sm font-semibold">Date fin</th>
@@ -33,32 +55,72 @@
 						<th class="px-4 py-3 text-left text-sm font-semibold">Actions</th>
 					</tr>
 				</thead>
+
+				{# Corps du tableau : on parcourt la variable "interventions" envoyée depuis le contrôleur #}
 				<tbody class="divide-y divide-gray-200">
 					{% for intervention in interventions %}
-						<tr class="hover:bg-blue-50 transition-colors">
-							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.libelle }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.dateDebut ? intervention.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.dateFin ? intervention.dateFin|date('Y-m-d H:i:s') : '' }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.adresse }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.ville }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.codePostal }}</td>
-							<td class="px-4 py-3 text-sm text-gray-700">{{ intervention.infos }}</td>
+						<tr
+							class="hover:bg-blue-50 transition-colors">
+							{# Libellé de l’intervention #}
+							<td class="px-4 py-3 text-sm text-gray-700">
+								{{ intervention.libelle }}
+							</td>
+
+							{# Date de début, formatée avec le filtre date() #}
+							<td class="px-4 py-3 text-sm text-gray-700">
+								{{ intervention.dateDebut ? intervention.dateDebut|date('Y-m-d H:i:s') : '' }}
+							</td>
+
+							{# Date de fin #}
+							<td class="px-4 py-3 text-sm text-gray-700">
+								{{ intervention.dateFin ? intervention.dateFin|date('Y-m-d H:i:s') : '' }}
+							</td>
+
+							{# Adresse complète #}
+							<td class="px-4 py-3 text-sm text-gray-700">
+								{{ intervention.adresse }}
+							</td>
+
+							{# Ville #}
+							<td class="px-4 py-3 text-sm text-gray-700">
+								{{ intervention.ville }}
+							</td>
+
+							{# Code postal #}
+							<td class="px-4 py-3 text-sm text-gray-700">
+								{{ intervention.codePostal }}
+							</td>
+
+							{# Informations supplémentaires #}
+							<td class="px-4 py-3 text-sm text-gray-700">
+								{{ intervention.infos }}
+							</td>
+
+							{# Statut (Enum) avec un style visuel en badge bleu #}
 							<td class="px-4 py-3 text-sm">
 								<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
 									{{ intervention.status.label() }}
 								</span>
 							</td>
+
+							{# Actions disponibles : Voir / Modifier #}
 							<td class="px-4 py-3 text-sm">
-								<div class="flex gap-2">
+								<div
+									class="flex gap-2">
+									{# Lien vers la page de détail (show) #}
 									<a href="{{ path('app_intervention_show', {'id': intervention.id}) }}" class="px-3 py-1 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors text-xs font-medium">
 										Voir
 									</a>
+
+									{# Lien vers la page d’édition (edit) #}
 									<a href="{{ path('app_intervention_edit', {'id': intervention.id}) }}" class="px-3 py-1 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors text-xs font-medium">
 										Modifier
 									</a>
 								</div>
 							</td>
 						</tr>
+
+						{# Cas où la liste d’interventions est vide #}
 					{% else %}
 						<tr>
 							<td colspan="10" class="px-4 py-8 text-center text-gray-500 ml-5">
@@ -69,7 +131,5 @@
 				</tbody>
 			</table>
 		</div>
-
 	</div>
-
 {% endblock %}
