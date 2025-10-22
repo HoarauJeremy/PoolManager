@@ -18,6 +18,16 @@ class RegistrationController extends AbstractController
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
     {
+        // Récupérer l'URL de référence (page précédente)
+        $referer = $request->headers->get('referer');
+        $loginUrl = $this->generateUrl('app_login');
+        $registerUrl = $this->generateUrl('app_register');
+        
+        // Si la référence est la page de connexion ou d'inscription, on utilise la page d'accueil
+        if (str_contains($referer, $loginUrl) || str_contains($referer, $registerUrl) || empty($referer)) {
+            $referer = $this->generateUrl('app_home');
+        }
+
         $user = new User();
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
@@ -43,6 +53,7 @@ class RegistrationController extends AbstractController
 
         return $this->render('registration/register.html.twig', [
             'registrationForm' => $form,
+            'referer' => $referer,
         ]);
     }
 }

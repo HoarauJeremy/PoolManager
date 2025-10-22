@@ -49,13 +49,6 @@ class RegistrationControllerTest extends WebTestCase
     public function testRegisterPageIsAccessible(): void
     {
         $this->client->request('GET', $this->path);
-        
-        // Debug: afficher le code de statut et le contenu si ça échoue
-        if ($this->client->getResponse()->getStatusCode() !== 200) {
-            echo "Status Code: " . $this->client->getResponse()->getStatusCode() . "\n";
-            echo "Content: " . $this->client->getResponse()->getContent() . "\n";
-        }
-        
         $this->assertResponseIsSuccessful();
         $this->assertSelectorTextContains('h1', 'Créer un compte');
     }
@@ -105,7 +98,7 @@ class RegistrationControllerTest extends WebTestCase
         $this->client->submit($form);
         
         $this->assertResponseIsUnprocessable();
-        $this->assertStringContainsString('Cette valeur n\'est pas une adresse email valide.', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('Veuillez entrer une adresse email valide', $this->client->getResponse()->getContent());
     }
 
     public function testRegisterWithWeakPassword(): void
@@ -178,7 +171,7 @@ class RegistrationControllerTest extends WebTestCase
         $this->client->submit($form);
         
         $this->assertResponseIsUnprocessable();
-        $this->assertStringContainsString('Il existe déjà un compte avec cet email', $this->client->getResponse()->getContent());
+        $this->assertStringContainsString('There is already an account with this email', $this->client->getResponse()->getContent());
     }
 
     protected function tearDown(): void

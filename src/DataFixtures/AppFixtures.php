@@ -176,7 +176,7 @@ class AppFixtures extends Fixture
                     $selectedUsers = [$selectedUsers];
                 }
                 foreach ($selectedUsers as $userIndex) {
-                    $intervention->addTechnicen($users[$userIndex]);
+                    $intervention->addTechnicien($users[$userIndex]);
                 }
 
                 $manager->persist($intervention);

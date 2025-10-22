@@ -36,16 +36,25 @@
                                 <li><strong>Tél. fixe :</strong> {{ client.telFixe ?? '-' }}</li>
                                 <li><strong>Tél. GSM :</strong> {{ client.telGsm ?? '-' }}</li>
                             </ul>
-
-                            {# Section des actions (lien Voir) #}
+                            {# Section des actions (lien edit) #}
                             <div class="mt-auto">
                                 <a
-                                    href="{{ path('app_client_edit', {'id': client.id}) }}"
+                                    href="{{ path('app_client_show', {'id': client.id}) }}"
                                     class="text-blue-600 hover:text-blue-800 hover:underline"
                                 >
                                     Voir
                                 </a>
                             </div>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <div class="mt-auto">
+                                <a
+                                    href="{{ path('app_client_edit', {'id': client.id}) }}"
+                                    class="text-blue-600 hover:text-blue-800 hover:underline"
+                                >
+                                    edit
+                                </a>
+                            </div>
+                        {% endif %}
                         </div>
                     {% endfor %}
                 </div>
