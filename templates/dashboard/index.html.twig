@@ -165,10 +165,10 @@
                                             {{ intervention.dateDebut|date('d/m/Y H:i') }}
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">
-                                            {% if intervention.technicens is empty %}
+                                            {% if intervention.techniciens is empty %}
                                                 <span class="text-gray-400">Non assigné</span>
                                             {% else %}
-                                                {% for technicien in intervention.technicens %}
+                                                {% for technicien in intervention.techniciens %}
                                                     {{ technicien.nom }}{% if not loop.last %}, {% endif %}
                                                 {% endfor %}
                                             {% endif %}

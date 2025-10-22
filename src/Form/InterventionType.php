@@ -112,7 +112,7 @@ class InterventionType extends AbstractType
                     'class' => 'bg-white w-full my-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
                 ],
             ])
-            ->add('technicens', EntityType::class, [
+            ->add('techniciens', EntityType::class, [
                 'class' => User::class,
                 'choice_label' => function (User $user) {
                     return $user->getNom() . ' ' . $user->getPrenom();

@@ -47,6 +47,12 @@
                                     <a href="{{ path('app_user_edit', {'id': user.id}) }}" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg text-xs font-medium no-underline inline-flex items-center transition-colors">
                                         <i class="fas fa-edit mr-1.5"></i> Modifier
                                     </a>
+                                    <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible.');" class="inline">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                                        <button type="submit" class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg text-xs font-medium no-underline inline-flex items-center transition-colors cursor-pointer">
+                                            <i class="fas fa-trash-alt mr-1.5"></i> Supprimer
+                                        </button>
+                                    </form>
                                 </div>
                             </td>
                         </tr>

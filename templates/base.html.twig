@@ -105,7 +105,7 @@
     <!-- Icônes d'administration (en bas) -->
     <div class="mt-auto">
         {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_register') }}" title="Ajouter un utilisateur">
+        <a href="{{ path('app_user_index') }}" title="Ajouter un utilisateur">
             <div class="sidebar-icon group">
                 <i class='bx bx-user-plus text-2xl text-gray-400 group-hover:text-white transition-colors'></i>
             </div>
