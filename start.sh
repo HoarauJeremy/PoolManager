@@ -54,7 +54,8 @@ if [[ -f package.json ]]; then
 fi
 
 # 5) Maintenance Symfony (migrations, cache, assets) — optionnel
-if [[ "${RUN_BOOT_TASKS:-0}" == "1" && -f bin/console ]]; then
+if [[ -f bin/console ]]; then
+  echo "-> Exécution des tâches Symfony essentielles"
   if php bin/console list doctrine:migrations:migrate >/dev/null 2>&1; then
     echo "-> doctrine:migrations:migrate"
     php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=prod || true
@@ -70,8 +71,13 @@ if [[ "${RUN_BOOT_TASKS:-0}" == "1" && -f bin/console ]]; then
   echo "-> assets:install"
   php bin/console assets:install --no-interaction --env=prod || true
 
-  echo "-> doctrine:fixtures:load (première fois uniquement)"
-  php bin/console doctrine:fixtures:load --no-interaction --env=prod || true
+  # Charger les fixtures seulement si RUN_BOOT_TASKS=1
+  if [[ "${RUN_BOOT_TASKS:-0}" == "1" ]]; then
+    echo "-> doctrine:fixtures:load (première fois uniquement)"
+    php bin/console doctrine:fixtures:load --no-interaction --env=prod || true
+  else
+    echo "-> Fixtures ignorées (RUN_BOOT_TASKS=0)"
+  fi
 fi
 
 # 6) Permissions
