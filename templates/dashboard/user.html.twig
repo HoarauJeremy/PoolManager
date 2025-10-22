@@ -60,115 +60,119 @@
         </div>
     </div>
 
-<!-- Interventions en cours -->
-    <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden mb-8">
-        <div class="p-6">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Interventions en cours</h3>
-
-            {% if interventions_en_cours is empty %}
-                <div class="text-center py-12">
-                    <i class='bx bx-time text-5xl text-gray-300'></i>
-                    <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune intervention en cours</h3>
-                    <p class="mt-1 text-sm text-gray-500">Vous n'avez aucune intervention en cours pour le moment.</p>
-                </div>
-            {% else %}
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {% for intervention in interventions_en_cours %}
-                        <div class="border-2 border-yellow-200 bg-yellow-50 rounded-lg p-5 hover:shadow-md transition">
-                            <div class="mb-3">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    <i class='bx bx-time-five mr-1'></i>
-                                    En cours
-                                </span>
-                            </div>
-                            <h4 class="text-base font-semibold text-gray-900 mb-2">{{ intervention.libelle }}</h4>
-                            <div class="space-y-1 mb-4">
-                                <p class="text-sm text-gray-600">
-                                    <i class='bx bx-user text-gray-400'></i>
-                                    {{ intervention.client ? intervention.client.nom : 'Non défini' }}
-                                </p>
-                                <p class="text-sm text-gray-600">
-                                    <i class='bx bx-calendar text-gray-400'></i>
-                                    {{ intervention.dateDebut|date('d/m/Y à H:i') }}
-                                </p>
-                                <p class="text-sm text-gray-600">
-                                    <i class='bx bx-category text-gray-400'></i>
-                                    {{ intervention.type ? intervention.type.nom : 'Non défini' }}
-                                </p>
-                            </div>
-                            <a href="{{ path('app_intervention_show', {id: intervention.id}) }}" class="inline-flex items-center justify-center w-full px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-yellow-600 hover:bg-yellow-700 transition-colors">
-                                <i class='bx bx-show text-lg mr-2'></i>
-                                Voir
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% endif %}
-        </div>
-    </div>
-
+<!-- Layout A|C, B|C : Colonnes avec interventions en cours et à venir à gauche, activités à droite -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <!-- Mes interventions à venir -->
-        <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
-            <h3 class="text-lg font-semibold text-gray-900 mb-4">Mes interventions à venir</h3>
-            {% if interventions_a_venir is empty %}
-                <div class="flex items-center justify-center h-64 text-gray-400">
-                    <div class="text-center">
-                        <i class='bx bx-calendar text-5xl text-gray-300'></i>
-                        <p class="mt-2 text-sm">Aucune intervention planifiée</p>
-                    </div>
-                </div>
-            {% else %}
-                <div class="space-y-4">
-                    {% for intervention in interventions_a_venir %}
-                        <div class="border-2 border-blue-200 bg-blue-50 rounded-xl p-5 hover:shadow-lg transition-shadow">
-                            <div class="mb-3">
-                                <div class="flex justify-between items-start mb-2">
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-500 text-white shadow-sm">
-                                        <i class='bx bx-calendar-check mr-1'></i>
-                                        Planifiée
-                                    </span>
-                                    <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">{{ intervention.type ? intervention.type.nom : 'Non défini' }}</span>
-                                </div>
-                                <h4 class="text-base font-bold text-gray-900 mb-2">{{ intervention.libelle }}</h4>
-                            </div>
+        <!-- Colonne gauche: Interventions en cours (A) et Interventions à venir (B) -->
+        <div class="space-y-6">
+            <!-- A - Interventions en cours -->
+            <div class="bg-white rounded-lg shadow border border-gray-200 overflow-hidden">
+                <div class="p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Interventions en cours</h3>
 
-                            <div class="space-y-2 mb-4">
-                                <div class="flex items-center text-sm text-gray-700">
-                                    <i class='bx bx-user text-blue-500 text-lg mr-2'></i>
-                                    <span class="font-medium">{{ intervention.client ? intervention.client.nom : 'Non défini' }}</span>
-                                </div>
-                                <div class="flex items-center text-sm text-gray-600">
-                                    <i class='bx bx-calendar text-blue-500 text-lg mr-2'></i>
-                                    <span>{{ intervention.dateDebut|date('d/m/Y à H:i') }}</span>
-                                </div>
-                                {% if intervention.client and intervention.client.adresse %}
-                                <div class="flex items-center text-sm text-gray-600">
-                                    <i class='bx bx-map text-blue-500 text-lg mr-2'></i>
-                                    <span class="truncate">{{ intervention.client.adresse }}</span>
-                                </div>
-                                {% endif %}
-                            </div>
-
-                            <div class="flex gap-2">
-                                <form method="post" action="{{ path('app_intervention_start', {id: intervention.id}) }}" class="flex-1">
-                                    <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
-                                        <i class='bx bx-play-circle text-lg mr-2'></i>
-                                        Passer en cours
-                                    </button>
-                                </form>
-                                <a href="{{ path('app_intervention_show', {id: intervention.id}) }}" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 border-2 border-blue-500 rounded-lg shadow-sm text-sm font-semibold text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                                    <i class='bx bx-show text-lg mr-2'></i>
-                                    Voir détails
-                                </a>
-                            </div>
+                    {% if interventions_en_cours is empty %}
+                        <div class="text-center py-12">
+                            <i class='bx bx-time text-5xl text-gray-300'></i>
+                            <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune intervention en cours</h3>
+                            <p class="mt-1 text-sm text-gray-500">Vous n'avez aucune intervention en cours pour le moment.</p>
                         </div>
-                    {% endfor %}
+                    {% else %}
+                        <div class="space-y-4">
+                            {% for intervention in interventions_en_cours %}
+                                <div class="border-2 border-yellow-200 bg-yellow-50 rounded-lg p-5 hover:shadow-md transition">
+                                    <div class="mb-3">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            <i class='bx bx-time-five mr-1'></i>
+                                            En cours
+                                        </span>
+                                    </div>
+                                    <h4 class="text-base font-semibold text-gray-900 mb-2">{{ intervention.libelle }}</h4>
+                                    <div class="space-y-1 mb-4">
+                                        <p class="text-sm text-gray-600">
+                                            <i class='bx bx-user text-gray-400'></i>
+                                            {{ intervention.client ? intervention.client.nom : 'Non défini' }}
+                                        </p>
+                                        <p class="text-sm text-gray-600">
+                                            <i class='bx bx-calendar text-gray-400'></i>
+                                            {{ intervention.dateDebut|date('d/m/Y à H:i') }}
+                                        </p>
+                                        <p class="text-sm text-gray-600">
+                                            <i class='bx bx-category text-gray-400'></i>
+                                            {{ intervention.type ? intervention.type.nom : 'Non défini' }}
+                                        </p>
+                                    </div>
+                                    <a href="{{ path('app_intervention_show', {id: intervention.id}) }}" class="inline-flex items-center justify-center w-full px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-yellow-600 hover:bg-yellow-700 transition-colors">
+                                        <i class='bx bx-show text-lg mr-2'></i>
+                                        Voir
+                                    </a>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
                 </div>
-            {% endif %}
+            </div>
+
+            <!-- B - Mes interventions à venir -->
+            <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Mes interventions à venir</h3>
+                {% if interventions_a_venir is empty %}
+                    <div class="flex items-center justify-center h-64 text-gray-400">
+                        <div class="text-center">
+                            <i class='bx bx-calendar text-5xl text-gray-300'></i>
+                            <p class="mt-2 text-sm">Aucune intervention planifiée</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="space-y-4">
+                        {% for intervention in interventions_a_venir %}
+                            <div class="border-2 border-blue-200 bg-blue-50 rounded-xl p-5 hover:shadow-lg transition-shadow">
+                                <div class="mb-3">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-blue-500 text-white shadow-sm">
+                                            <i class='bx bx-calendar-check mr-1'></i>
+                                            Planifiée
+                                        </span>
+                                        <span class="text-xs font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">{{ intervention.type ? intervention.type.nom : 'Non défini' }}</span>
+                                    </div>
+                                    <h4 class="text-base font-bold text-gray-900 mb-2">{{ intervention.libelle }}</h4>
+                                </div>
+
+                                <div class="space-y-2 mb-4">
+                                    <div class="flex items-center text-sm text-gray-700">
+                                        <i class='bx bx-user text-blue-500 text-lg mr-2'></i>
+                                        <span class="font-medium">{{ intervention.client ? intervention.client.nom : 'Non défini' }}</span>
+                                    </div>
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class='bx bx-calendar text-blue-500 text-lg mr-2'></i>
+                                        <span>{{ intervention.dateDebut|date('d/m/Y à H:i') }}</span>
+                                    </div>
+                                    {% if intervention.client and intervention.client.adresse %}
+                                    <div class="flex items-center text-sm text-gray-600">
+                                        <i class='bx bx-map text-blue-500 text-lg mr-2'></i>
+                                        <span class="truncate">{{ intervention.client.adresse }}</span>
+                                    </div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="flex gap-2">
+                                    <form method="post" action="{{ path('app_intervention_start', {id: intervention.id}) }}" class="flex-1">
+                                        <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors">
+                                            <i class='bx bx-play-circle text-lg mr-2'></i>
+                                            Passer en cours
+                                        </button>
+                                    </form>
+                                    <a href="{{ path('app_intervention_show', {id: intervention.id}) }}" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 border-2 border-blue-500 rounded-lg shadow-sm text-sm font-semibold text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                        <i class='bx bx-show text-lg mr-2'></i>
+                                        Voir détails
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
         </div>
 
-        <!-- Activités récentes -->
+        <!-- Colonne droite: C - Activités récentes (spanning full height) -->
         <div class="bg-white p-6 rounded-lg shadow border border-gray-200">
             <h3 class="text-lg font-semibold text-gray-900 mb-4">Activités récentes de l'équipe</h3>
             <div class="flow-root">

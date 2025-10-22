@@ -70,9 +70,13 @@ class DashboardController extends AbstractController
             'interventions_par_statut' => $statsParStatut
         ];
 
+        // Récupérer les interventions du mois actuel pour le mini calendrier
+        $interventionsMoisActuel = $repository->findInterventionsByMonth((int)date('Y'), (int)date('m'));
+
         return $this->render('dashboard/admin.html.twig', [
             'interventions' => $paginator,
             'stats' => $stats,
+            'interventions_mois' => $interventionsMoisActuel,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalItems' => $totalItems,
@@ -84,9 +88,9 @@ class DashboardController extends AbstractController
     {
         $userId = $user->getId();
 
-        // Récupération des interventions via le repository
-        $interventionsAVenir = $interventionRepository->findUpcomingByUser($userId, 5);
-        $interventionsEnCours = $interventionRepository->findInProgressByUser($userId);
+        // Récupération des interventions via le repository (limité à 6 max)
+        $interventionsAVenir = $interventionRepository->findUpcomingByUser($userId, 2);
+        $interventionsEnCours = array_slice($interventionRepository->findInProgressByUser($userId), 0, 1);
 
         // Historique avec pagination
         $query = $interventionRepository->findHistoryByUser($userId, $page, $limit);
@@ -107,12 +111,16 @@ class DashboardController extends AbstractController
             'interventions_par_statut' => $statsParStatut
         ];
 
+        // Récupérer les interventions du mois actuel pour le mini calendrier
+        $interventionsMoisActuel = $interventionRepository->findInterventionsByMonthAndUser((int)date('Y'), (int)date('m'), $userId);
+
         return $this->render('dashboard/user.html.twig', [
             'interventions_a_venir' => $interventionsAVenir,
             'interventions_en_cours' => $interventionsEnCours,
             'historique' => $paginator,
             'stats' => $stats,
-            'activites' => $interventionRepository->getRecentActivities(5),
+            'activites' => $interventionRepository->getRecentActivities(9),
+            'interventions_mois' => $interventionsMoisActuel,
             'currentPage' => $page,
             'totalPages' => $totalPages,
             'totalItems' => $totalItems,
