@@ -1,54 +1,118 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Intervention{% endblock %}
+{% block title %}Détail de l'intervention
+{% endblock %}
 
 {% block body %}
-    <h1>Intervention</h1>
+	<div class="max-w-4xl mx-auto px-4 py-8">
+		<h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Détail de l'intervention</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ intervention.id }}</td>
-            </tr>
-            <tr>
-                <th>Libelle</th>
-                <td>{{ intervention.libelle }}</td>
-            </tr>
-            <tr>
-                <th>Date_debut</th>
-                <td>{{ intervention.dateDebut ? intervention.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Date_fin</th>
-                <td>{{ intervention.dateFin ? intervention.dateFin|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Adresse</th>
-                <td>{{ intervention.adresse }}</td>
-            </tr>
-            <tr>
-                <th>Ville</th>
-                <td>{{ intervention.ville }}</td>
-            </tr>
-            <tr>
-                <th>Code_postal</th>
-                <td>{{ intervention.codePostal }}</td>
-            </tr>
-            <tr>
-                <th>Infos</th>
-                <td>{{ intervention.infos }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ intervention.status }}</td>
-            </tr>
-        </tbody>
-    </table>
+		<div class="bg-blue-50 rounded-lg p-6 shadow-lg">
+			<div class="bg-white rounded-lg overflow-hidden">
+				<div class="divide-y divide-gray-200">
 
-    <a href="{{ path('app_intervention_index') }}">back to list</a>
+					<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+						<div class="w-1/3 font-semibold text-gray-700">ID</div>
+						<div class="w-2/3 text-gray-600">{{ intervention.id }}</div>
+					</div>
 
-    <a href="{{ path('app_intervention_edit', {'id': intervention.id}) }}">edit</a>
+					<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+						<div class="w-1/3 font-semibold text-gray-700">Libellé</div>
+						<div class="w-2/3 text-gray-600">{{ intervention.libelle }}</div>
+					</div>
 
-    {{ include('intervention/_delete_form.html.twig') }}
+					<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+						<div class="w-1/3 font-semibold text-gray-700">Date début</div>
+						<div class="w-2/3 text-gray-600">{{ intervention.dateDebut ? intervention.dateDebut|date('d/m/Y à H:i') : '-' }}</div>
+					</div>
+
+					<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+						<div class="w-1/3 font-semibold text-gray-700">Date fin</div>
+						<div class="w-2/3 text-gray-600">{{ intervention.dateFin ? intervention.dateFin|date('d/m/Y à H:i') : '-' }}</div>
+					</div>
+
+					<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+						<div class="w-1/3 font-semibold text-gray-700">Adresse</div>
+						<div class="w-2/3 text-gray-600">{{ intervention.adresse }}</div>
+					</div>
+
+					<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+						<div class="w-1/3 font-semibold text-gray-700">Ville</div>
+						<div class="w-2/3 text-gray-600">{{ intervention.ville }}</div>
+					</div>
+
+					<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+						<div class="w-1/3 font-semibold text-gray-700">Code postal</div>
+						<div class="w-2/3 text-gray-600">{{ intervention.codePostal }}</div>
+					</div>
+
+					<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+						<div class="w-1/3 font-semibold text-gray-700">Informations</div>
+						<div class="w-2/3 text-gray-600">{{ intervention.infos ?: '-' }}</div>
+					</div>
+
+					<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+						<div class="w-1/3 font-semibold text-gray-700">Status</div>
+						<div class="w-2/3">
+							<span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+								{{ intervention.status.label() }}
+							</span>
+						</div>
+					</div>
+
+					{% if intervention.type %}
+						<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+							<div class="w-1/3 font-semibold text-gray-700">Type</div>
+							<div class="w-2/3 text-gray-600">{{ intervention.type.nom }}</div>
+						</div>
+					{% endif %}
+
+					{% if intervention.client %}
+						<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+							<div class="w-1/3 font-semibold text-gray-700">Client</div>
+							<div class="w-2/3 text-gray-600">{{ intervention.client.nom }}
+								{{ intervention.client.prenom }}</div>
+						</div>
+					{% endif %}
+
+					{% if intervention.materiel is not empty %}
+						<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+							<div class="w-1/3 font-semibold text-gray-700">Matériel</div>
+							<div class="w-2/3">
+								{% for mat in intervention.materiel %}
+									<span class="inline-block px-2 py-1 bg-gray-100 text-gray-700 rounded text-sm mr-2 mb-2">
+										{{ mat.libelle }}
+									</span>
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+
+					{% if intervention.technicens is not empty %}
+						<div class="flex py-4 px-6 hover:bg-blue-50 transition-colors">
+							<div class="w-1/3 font-semibold text-gray-700">Techniciens</div>
+							<div class="w-2/3">
+								{% for technicien in intervention.technicens %}
+									<span class="inline-block px-2 py-1 bg-green-100 text-green-700 rounded text-sm mr-2 mb-2">
+										{{ technicien.nom }}
+										{{ technicien.prenom }}
+									</span>
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+
+				</div>
+			</div>
+
+			<div class="flex gap-4 mt-6 justify-center">
+				<a href="{{ path('app_intervention_index') }}" class="px-6 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors font-medium">
+					← Retour à la liste
+				</a>
+				<a href="{{ path('app_intervention_edit', {'id': intervention.id}) }}" class="px-6 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors font-medium">
+					Modifier
+				</a>
+			</div>
+		</div>
+	</div>
 {% endblock %}
