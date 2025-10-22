@@ -43,7 +43,7 @@ class InterventionRepository extends ServiceEntityRepository
     public function findUpcomingByUser(int $userId, int $limit = 5): array
     {
         return $this->createQueryBuilder('i')
-            ->leftJoin('i.technicens', 't')
+            ->leftJoin('i.techniciens', 't')
             ->where('t.id = :userId')
             ->andWhere('i.status = :status')
             ->setParameter('userId', $userId)
@@ -60,7 +60,7 @@ class InterventionRepository extends ServiceEntityRepository
     public function findInProgressByUser(int $userId): array
     {
         return $this->createQueryBuilder('i')
-            ->leftJoin('i.technicens', 't')
+            ->leftJoin('i.techniciens', 't')
             ->where('t.id = :userId')
             ->andWhere('i.status = :status')
             ->setParameter('userId', $userId)
@@ -76,7 +76,7 @@ class InterventionRepository extends ServiceEntityRepository
     public function findHistoryByUser(int $userId, int $page, int $limit): Query
     {
         return $this->createQueryBuilder('i')
-            ->leftJoin('i.technicens', 't')
+            ->leftJoin('i.techniciens', 't')
             ->where('t.id = :userId')
             ->andWhere('i.status IN (:statuses)')
             ->setParameter('userId', $userId)
@@ -94,7 +94,7 @@ class InterventionRepository extends ServiceEntityRepository
     {
         return (int) $this->createQueryBuilder('i')
             ->select('COUNT(i.id)')
-            ->leftJoin('i.technicens', 't')
+            ->leftJoin('i.techniciens', 't')
             ->where('t.id = :userId')
             ->andWhere('i.status = :status')
             ->setParameter('userId', $userId)
@@ -190,7 +190,7 @@ class InterventionRepository extends ServiceEntityRepository
 
             $count = $this->createQueryBuilder('i')
                 ->select('COUNT(i.id)')
-                ->leftJoin('i.technicens', 't')
+                ->leftJoin('i.techniciens', 't')
                 ->where('t.id = :userId')
                 ->andWhere('i.date_debut >= :start')
                 ->andWhere('i.date_debut <= :end')
@@ -215,7 +215,7 @@ class InterventionRepository extends ServiceEntityRepository
     public function getRecentActivities(int $limit = 5): array
     {
         $interventions = $this->createQueryBuilder('i')
-            ->leftJoin('i.technicens', 't')
+            ->leftJoin('i.techniciens', 't')
             ->leftJoin('i.client', 'c')
             ->orderBy('i.date_debut', 'DESC')
             ->setMaxResults($limit * 2)
@@ -224,7 +224,7 @@ class InterventionRepository extends ServiceEntityRepository
 
         $activites = [];
         foreach ($interventions as $intervention) {
-            foreach ($intervention->getTechnicens() as $technicien) {
+            foreach ($intervention->getTechniciens() as $technicien) {
                 $activites[] = [
                     'technicien' => $technicien->getPrenom() . ' ' . $technicien->getNom(),
                     'intervention' => $intervention->getLibelle(),
@@ -271,7 +271,7 @@ class InterventionRepository extends ServiceEntityRepository
         $endDate->modify('last day of this month')->setTime(23, 59, 59);
 
         return $this->createQueryBuilder('i')
-            ->leftJoin('i.technicens', 't')
+            ->leftJoin('i.techniciens', 't')
             ->where('t.id = :userId')
             ->andWhere('i.date_debut >= :start')
             ->andWhere('i.date_debut <= :end')

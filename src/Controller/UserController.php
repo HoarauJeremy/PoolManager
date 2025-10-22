@@ -48,4 +48,20 @@ class UserController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
+    #[Route('/admin/users/{id}/delete', name: 'app_user_delete', methods: ['POST'])]
+    public function delete(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier le jeton CSRF pour la sécurité
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($user);
+            $entityManager->flush();
+            
+            $this->addFlash('success', 'Utilisateur supprimé avec succès.');
+        } else {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+        }
+
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
 }
