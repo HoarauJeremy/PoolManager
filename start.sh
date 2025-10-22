@@ -57,9 +57,12 @@ if [[ -f bin/console ]]; then
   php bin/console assets:install --no-interaction || true
 fi
 
-# 6) Healthcheck: OK seulement à la fin
+# 6) Vérifier les permissions et créer healthcheck
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
 mkdir -p public
 echo "OK" > public/healthz
+chown www-data:www-data public/healthz
 
 echo "==> start Apache"
 exec apache2-foreground
