@@ -34,12 +34,40 @@ final class Version20251022064913 extends AbstractMigration
         $this->addSql('PREPARE stmt FROM @sql');
         $this->addSql('EXECUTE stmt');
         $this->addSql('DEALLOCATE PREPARE stmt');
-        $this->addSql('ALTER TABLE image DROP FOREIGN KEY FK_C53D045F8EAE3863');
-        $this->addSql('ALTER TABLE intervention_material DROP FOREIGN KEY FK_412D0E368EAE3863');
-        $this->addSql('ALTER TABLE intervention_material DROP FOREIGN KEY FK_412D0E36E308AC6F');
-        $this->addSql('DROP TABLE image');
-        $this->addSql('DROP TABLE intervention_material');
-        $this->addSql('DROP TABLE material');
+        // Supprimer les contraintes seulement si les tables existent
+        $this->addSql('SET @table_exists = (SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_NAME = \'image\' AND TABLE_SCHEMA = DATABASE())');
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'ALTER TABLE image DROP FOREIGN KEY FK_C53D045F8EAE3863\', \'SELECT "Table image does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
+        
+        $this->addSql('SET @table_exists = (SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_NAME = \'intervention_material\' AND TABLE_SCHEMA = DATABASE())');
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'ALTER TABLE intervention_material DROP FOREIGN KEY FK_412D0E368EAE3863\', \'SELECT "Table intervention_material does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
+        
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'ALTER TABLE intervention_material DROP FOREIGN KEY FK_412D0E36E308AC6F\', \'SELECT "Table intervention_material does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
+        
+        // Supprimer les tables seulement si elles existent
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'DROP TABLE image\', \'SELECT "Table image does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
+        
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'DROP TABLE intervention_material\', \'SELECT "Table intervention_material does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
+        
+        $this->addSql('SET @table_exists = (SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_NAME = \'material\' AND TABLE_SCHEMA = DATABASE())');
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'DROP TABLE material\', \'SELECT "Table material does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
     }
 
     public function down(Schema $schema): void
@@ -66,9 +94,28 @@ final class Version20251022064913 extends AbstractMigration
         $this->addSql('PREPARE stmt FROM @sql');
         $this->addSql('EXECUTE stmt');
         $this->addSql('DEALLOCATE PREPARE stmt');
-        $this->addSql('ALTER TABLE intervention_materiel DROP FOREIGN KEY FK_2541CB328EAE3863');
-        $this->addSql('ALTER TABLE intervention_materiel DROP FOREIGN KEY FK_2541CB3216880AAF');
-        $this->addSql('DROP TABLE intervention_materiel');
-        $this->addSql('DROP TABLE materiel');
+        // Supprimer les contraintes seulement si les tables existent
+        $this->addSql('SET @table_exists = (SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_NAME = \'intervention_materiel\' AND TABLE_SCHEMA = DATABASE())');
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'ALTER TABLE intervention_materiel DROP FOREIGN KEY FK_2541CB328EAE3863\', \'SELECT "Table intervention_materiel does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
+        
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'ALTER TABLE intervention_materiel DROP FOREIGN KEY FK_2541CB3216880AAF\', \'SELECT "Table intervention_materiel does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
+        
+        // Supprimer les tables seulement si elles existent
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'DROP TABLE intervention_materiel\', \'SELECT "Table intervention_materiel does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
+        
+        $this->addSql('SET @table_exists = (SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_NAME = \'materiel\' AND TABLE_SCHEMA = DATABASE())');
+        $this->addSql('SET @sql = IF(@table_exists > 0, \'DROP TABLE materiel\', \'SELECT "Table materiel does not exist"\')');
+        $this->addSql('PREPARE stmt FROM @sql');
+        $this->addSql('EXECUTE stmt');
+        $this->addSql('DEALLOCATE PREPARE stmt');
     }
 }
