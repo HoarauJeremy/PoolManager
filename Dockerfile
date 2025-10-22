@@ -124,4 +124,4 @@ RUN chown -R www-data:www-data var
 
 # Ports & ENTRYPOINT
 EXPOSE 80
-ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
+CMD ["apache2-foreground"]
