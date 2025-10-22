@@ -32,7 +32,7 @@ if [[ -f composer.json ]]; then
   echo "-> composer install (no-dev)"
   # S'assurer que APP_ENV est bien défini pour la production
   export APP_ENV="${APP_ENV:-prod}"
-  composer install --no-interaction --optimize-autoloader --no-dev
+  composer install --no-interaction --no-dev --optimize-autoloader --no-scripts
 fi
 
 if [[ -f package.json && ! -d node_modules ]]; then
