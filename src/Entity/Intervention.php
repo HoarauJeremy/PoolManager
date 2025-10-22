@@ -56,15 +56,15 @@ class Intervention
     private ?Client $client = null;
 
     /**
-     * @var Collection<int, user>
+     * @var Collection<int, User>
      */
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'interventions')]
-    private Collection $technicens;
+    private Collection $techniciens;
 
     public function __construct()
     {
         $this->materiel = new ArrayCollection();
-        $this->technicens = new ArrayCollection();
+        $this->techniciens = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -217,25 +217,25 @@ class Intervention
     }
 
     /**
-     * @return Collection<int, user>
+     * @return Collection<int, User>
      */
-    public function getTechnicens(): Collection
+    public function getTechniciens(): Collection
     {
-        return $this->technicens;
+        return $this->techniciens;
     }
 
-    public function addTechnicen(User $technicen): static
+    public function addTechnicien(User $technicien): static
     {
-        if (!$this->technicens->contains($technicen)) {
-            $this->technicens->add($technicen);
+        if (!$this->techniciens->contains($technicien)) {
+            $this->techniciens->add($technicien);
         }
 
         return $this;
     }
 
-    public function removeTechnicen(User $technicen): static
+    public function removeTechnicien(User $technicien): static
     {
-        $this->technicens->removeElement($technicen);
+        $this->techniciens->removeElement($technicien);
 
         return $this;
     }
