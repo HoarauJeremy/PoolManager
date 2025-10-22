@@ -100,6 +100,13 @@
                 <i class='bx bx-calendar text-2xl {% if app.request.attributes.get('_route') == 'app_calendrier' %}text-white{% else %}text-gray-400{% endif %}'></i>
             </div>
         </a>
+
+        <!-- Icône Matériel -->
+        <a href="{{ path('app_materiel_index') }}">
+            <div class="sidebar-icon {% if app.request.attributes.get('_route') == 'app_materiel_index' %}active{% endif %}">
+                <i class='bx bx-laptop text-2xl {% if app.request.attributes.get('_route') == 'app_materiel_index' %}text-white{% else %}text-gray-400{% endif %}'></i>
+            </div>
+        </a>
     </div>
 
     <!-- Icônes d'administration (en bas) -->
