@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Intervention;
+use App\Enum\Status;
 use App\Form\InterventionType;
 use App\Repository\InterventionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -68,9 +69,27 @@ final class InterventionController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/start', name: 'app_intervention_start', methods: ['POST'])]
+    public function start(Intervention $intervention, EntityManagerInterface $entityManager): Response
+    {
+        // Vérifier que l'intervention est bien planifiée
+        if ($intervention->getStatus() === Status::PLANIFIER) {
+            $intervention->setStatus(Status::ENCOURS);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'L\'intervention a été passée en cours.');
+        } else {
+            $this->addFlash('error', 'Cette intervention ne peut pas être passée en cours.');
+        }
+
+        return $this->redirectToRoute('app_dashboard', [], Response::HTTP_SEE_OTHER);
+    }
+
     #[Route('/{id}', name: 'app_intervention_delete', methods: ['POST'])]
     public function delete(Request $request, Intervention $intervention, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+
         if ($this->isCsrfTokenValid('delete'.$intervention->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($intervention);
             $entityManager->flush();
