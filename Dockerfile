@@ -7,7 +7,7 @@ RUN apt-get update \
        git unzip zip libicu-dev libzip-dev curl gnupg2 ca-certificates \
        apt-transport-https lsb-release \
   && docker-php-ext-install intl pdo_mysql zip opcache \
-  && a2enmod rewrite headers expires \
+  && a2enmod rewrite headers expires dir setenvif \
   && rm -rf /var/lib/apt/lists/*
 
 # Composer
@@ -29,14 +29,22 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf \
     && sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}/!g' /etc/apache2/apache2.conf
 
-# Répertoire de travail (le code sera monté en volume)
+# Répertoire de travail
 WORKDIR /var/www/html
 
-# Droits par défaut (le volume prendra le dessus)
+# Copier le code source de l'application
+COPY . /var/www/html/
+
+# Copier le script de démarrage
+COPY ./start.sh /usr/local/bin/start.sh
+
+# Droits par défaut
 RUN chown -R www-data:www-data /var/www/html
 
+# Configuration Apache
 COPY ./apache-config.conf /etc/apache2/sites-available/000-default.conf
 
-# Ports & CMD Apache
+# Ports & CMD
 EXPOSE 80
-CMD ["apache2-foreground"]
+CMD ["/usr/local/bin/start.sh"]
+
