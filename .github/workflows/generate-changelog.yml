@@ -2,110 +2,70 @@ name: Generate Changelog for Symfony Project
 
 on:
   release:
-    types: [published]         # se lance quand la release est publiée
-  workflow_dispatch:           # lancement manuel au besoin
+    types: [created, edited]  # Déclenche sur création/édition d'une release manuelle
+  workflow_dispatch:  # Permet de lancer manuellement depuis l'onglet Actions (pour tester)
 
 permissions:
-  contents: write              # nécessaire pour pousser un commit
-
-env:
-  TAG: ${{ github.event.release.tag_name }}
-  TARGET_BRANCH: ${{ github.event.release.target_commitish }}
-  DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+  contents: write  # Essentiel pour committer et pousser CHANGELOG.md
 
 jobs:
   generate-changelog:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          fetch-tags: true
-          persist-credentials: true
+          fetch-depth: 0  # Récupère l'historique complet pour analyser les commits/tags
 
-      - name: Debug context
+      - name: Debug - List tags and recent commits
         run: |
-          echo "Event: $GITHUB_EVENT_NAME"
-          echo "TAG: $TAG"
-          echo "TARGET_BRANCH (from release): $TARGET_BRANCH"
-          echo "DEFAULT_BRANCH: $DEFAULT_BRANCH"
-          echo "Current ref: ${GITHUB_REF} / ${GITHUB_REF_NAME}"
-          git --version
-          git remote -v
+          echo "=== Tags disponibles ==="
+          git tag --list --sort=-version:refname | head -5
+          echo "=== 5 derniers commits ==="
+          git log --oneline -5
+          PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1) 2>/dev/null || echo "")
+          echo "Tag actuel (si release): ${{ github.event.release.tag_name || 'Aucun (test manuel)' }}"
+          echo "Tag précédent: $PREV_TAG"
 
-      - name: Ensure we have all tags
+      - name: Install git-cliff (dernière version stable)
         run: |
-          git fetch --force --tags origin
+          # Télécharge la dernière release x86_64-linux (plus robuste que v1.5.0 fixe)
+          LATEST_VERSION=$(curl -s https://api.github.com/repos/orhun/git-cliff/releases/latest | grep '"tag_name"' | sed -E 's/.*"([^"]+)".*/\1/')
+          curl -L https://github.com/orhun/git-cliff/releases/download/${LATEST_VERSION}/git-cliff-${LATEST_VERSION}-x86_64-unknown-linux-gnu.tar.gz | tar -xz
+          sudo mv git-cliff-${LATEST_VERSION}-x86_64-unknown-linux-gnu/git-cliff /usr/local/bin/
+          git-cliff --version  # Vérifie l'installation
 
-      - name: Pick destination branch
-        id: pick
+      - name: Generate Changelog
+        id: changelog
         run: |
-          set -euo pipefail
-          TARGET="${TARGET_BRANCH:-$DEFAULT_BRANCH}"
-          if git ls-remote --exit-code --heads origin "$TARGET" >/dev/null 2>&1; then
-            echo "branch=$TARGET" >> "$GITHUB_OUTPUT"
-          else
-            echo "Target branch '$TARGET' not found on remote. Falling back to '$DEFAULT_BRANCH'."
-            echo "branch=$DEFAULT_BRANCH" >> "$GITHUB_OUTPUT"
+          TAG_NAME="${{ github.event.release.tag_name || 'unreleased' }}"  # Fallback pour test manuel
+          PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1) 2>/dev/null || echo "")
+          FROM_RANGE="${PREV_TAG:-HEAD~10}"  # Range par défaut
+
+          # Crée CHANGELOG.md si inexistant
+          if [ ! -f CHANGELOG.md ]; then
+            echo "# PoolManager Changelog" > CHANGELOG.md
+            echo "" >> CHANGELOG.md
           fi
 
-      - name: Switch to destination branch
-        run: |
-          set -euo pipefail
-          BRANCH="${{ steps.pick.outputs.branch }}"
-          git fetch origin "$BRANCH"
-          # Crée la branche locale si nécessaire et pointe sur la remote
-          if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
-            git checkout "$BRANCH"
-          else
-            git checkout -b "$BRANCH" "origin/$BRANCH"
-          fi
-          echo "On branch: $(git branch --show-current)"
+          # Essaie git-cliff (nécessite conventional commits pour du contenu riche)
+          git-cliff --output CHANGELOG.md --prepend --tag "$TAG_NAME" --from "$FROM_RANGE" --config cliff.toml || {
+            echo "git-cliff a échoué ou généré vide ; fallback vers git log basique"
+            # Alternative basique : Ajoute une section avec git log
+            echo "## [$TAG_NAME] - $(date +%Y-%m-%d)" >> CHANGELOG.md
+            git log "$FROM_RANGE"..HEAD --pretty=format:"- %s (%an, %ar)" >> CHANGELOG.md || echo "- Pas de nouveaux commits" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          }
 
-      - name: Install git-cliff
-        run: |
-          set -euo pipefail
-          curl -Ls https://github.com/orhun/git-cliff/releases/download/v2.4.0/git-cliff-2.4.0-x86_64-unknown-linux-gnu.tar.gz \
-            | tar -xz
-          sudo mv git-cliff-*/git-cliff /usr/local/bin/
-          git-cliff --version
+          # Affiche un aperçu pour debug
+          echo "=== Aperçu CHANGELOG.md ==="
+          cat CHANGELOG.md | head -20
 
-      - name: Generate CHANGELOG.md
-        run: |
-          set -euo pipefail
-          test -f CHANGELOG.md || echo "# Changelog" > CHANGELOG.md
-
-          # Cherche le tag précédent au tag courant (tolérant aux tags légers)
-          PREV_TAG=$(git describe --tags --abbrev=0 "${TAG}^" 2>/dev/null || true)
-          if [ -z "$PREV_TAG" ]; then
-            # fallback: prend le tag juste avant chronologiquement
-            PREV_TAG=$(git tag --sort=creatordate | awk -v t="$TAG" '$0==t{print prev}{prev=\$0}' || true)
-          fi
-          echo "TAG: $TAG"
-          echo "PREV_TAG: ${PREV_TAG:-<none>}"
-
-          if [ -n "$PREV_TAG" ]; then
-            git-cliff --output CHANGELOG.md --prepend --tag "$TAG" --range "$PREV_TAG..$TAG"
-          else
-            # première release (ou pas de tag précédent)
-            git-cliff --output CHANGELOG.md --prepend --tag "$TAG" --to "$TAG"
-          fi
-
-          echo "Preview head of CHANGELOG.md:"
-          head -n 50 CHANGELOG.md || true
-
-      - name: Commit and push
-        run: |
-          set -euo pipefail
-          BRANCH="${{ steps.pick.outputs.branch }}"
-          if [ -n "$(git status --porcelain CHANGELOG.md)" ]; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add CHANGELOG.md
-            git commit -m "docs(changelog): update CHANGELOG.md for ${TAG}"
-            git push origin HEAD:"$BRANCH"
-          else
-            echo "No changes to commit."
-          fi
+      - name: Commit and Push Changelog
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "docs(changelog): update CHANGELOG.md for ${{ github.event.release.tag_name || 'unreleased' }}"
+          file_pattern: CHANGELOG.md
+          branching_mode: existing  # Met à jour la branche actuelle (main)
+          commit_user_name: "GitHub Actions"
+          commit_user_email: "actions@github.com"
