@@ -1,0 +1,111 @@
+name: Generate Changelog for Symfony Project
+
+on:
+  release:
+    types: [published]         # se lance quand la release est publiée
+  workflow_dispatch:           # lancement manuel au besoin
+
+permissions:
+  contents: write              # nécessaire pour pousser un commit
+
+env:
+  TAG: ${{ github.event.release.tag_name }}
+  TARGET_BRANCH: ${{ github.event.release.target_commitish }}
+  DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+          persist-credentials: true
+
+      - name: Debug context
+        run: |
+          echo "Event: $GITHUB_EVENT_NAME"
+          echo "TAG: $TAG"
+          echo "TARGET_BRANCH (from release): $TARGET_BRANCH"
+          echo "DEFAULT_BRANCH: $DEFAULT_BRANCH"
+          echo "Current ref: ${GITHUB_REF} / ${GITHUB_REF_NAME}"
+          git --version
+          git remote -v
+
+      - name: Ensure we have all tags
+        run: |
+          git fetch --force --tags origin
+
+      - name: Pick destination branch
+        id: pick
+        run: |
+          set -euo pipefail
+          TARGET="${TARGET_BRANCH:-$DEFAULT_BRANCH}"
+          if git ls-remote --exit-code --heads origin "$TARGET" >/dev/null 2>&1; then
+            echo "branch=$TARGET" >> "$GITHUB_OUTPUT"
+          else
+            echo "Target branch '$TARGET' not found on remote. Falling back to '$DEFAULT_BRANCH'."
+            echo "branch=$DEFAULT_BRANCH" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Switch to destination branch
+        run: |
+          set -euo pipefail
+          BRANCH="${{ steps.pick.outputs.branch }}"
+          git fetch origin "$BRANCH"
+          # Crée la branche locale si nécessaire et pointe sur la remote
+          if git show-ref --verify --quiet "refs/heads/$BRANCH"; then
+            git checkout "$BRANCH"
+          else
+            git checkout -b "$BRANCH" "origin/$BRANCH"
+          fi
+          echo "On branch: $(git branch --show-current)"
+
+      - name: Install git-cliff
+        run: |
+          set -euo pipefail
+          curl -Ls https://github.com/orhun/git-cliff/releases/download/v2.4.0/git-cliff-2.4.0-x86_64-unknown-linux-gnu.tar.gz \
+            | tar -xz
+          sudo mv git-cliff-*/git-cliff /usr/local/bin/
+          git-cliff --version
+
+      - name: Generate CHANGELOG.md
+        run: |
+          set -euo pipefail
+          test -f CHANGELOG.md || echo "# Changelog" > CHANGELOG.md
+
+          # Cherche le tag précédent au tag courant (tolérant aux tags légers)
+          PREV_TAG=$(git describe --tags --abbrev=0 "${TAG}^" 2>/dev/null || true)
+          if [ -z "$PREV_TAG" ]; then
+            # fallback: prend le tag juste avant chronologiquement
+            PREV_TAG=$(git tag --sort=creatordate | awk -v t="$TAG" '$0==t{print prev}{prev=\$0}' || true)
+          fi
+          echo "TAG: $TAG"
+          echo "PREV_TAG: ${PREV_TAG:-<none>}"
+
+          if [ -n "$PREV_TAG" ]; then
+            git-cliff --output CHANGELOG.md --prepend --tag "$TAG" --range "$PREV_TAG..$TAG"
+          else
+            # première release (ou pas de tag précédent)
+            git-cliff --output CHANGELOG.md --prepend --tag "$TAG" --to "$TAG"
+          fi
+
+          echo "Preview head of CHANGELOG.md:"
+          head -n 50 CHANGELOG.md || true
+
+      - name: Commit and push
+        run: |
+          set -euo pipefail
+          BRANCH="${{ steps.pick.outputs.branch }}"
+          if [ -n "$(git status --porcelain CHANGELOG.md)" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add CHANGELOG.md
+            git commit -m "docs(changelog): update CHANGELOG.md for ${TAG}"
+            git push origin HEAD:"$BRANCH"
+          else
+            echo "No changes to commit."
+          fi
