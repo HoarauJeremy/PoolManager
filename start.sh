@@ -40,6 +40,17 @@ echo "-> Vérification des fichiers"
 ls -la public/ || true
 ls -la public/index.php || true
 
+# --- DB CHECK (optionnel) ---
+if [[ "${DB_CHECK:-0}" == "1" && -f bin/console ]]; then
+  echo "-> DB_CHECK: comptages rapides"
+  # ⚠️ Adapte les noms de tables si besoin (user, users, team, pool, etc.)
+  php bin/console doctrine:query:sql "SELECT COUNT(*) AS c FROM user" --env=prod || true
+  php bin/console doctrine:query:sql "SELECT COUNT(*) AS c FROM client" --env=prod || true
+  php bin/console doctrine:query:sql "SELECT COUNT(*) AS c FROM intervention" --env=prod || true
+  php bin/console doctrine:query:sql "SELECT COUNT(*) AS c FROM materiel" --env=prod || true
+  php bin/console doctrine:query:sql "SELECT COUNT(*) AS c FROM type_intervention" --env=prod || true
+fi
+
 # -------- 1) Composer AVANT Apache (pour créer vendor/autoload_runtime.php) --------
 if [[ -f composer.json ]]; then
   echo "-> composer install (synchrone)"
