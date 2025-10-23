@@ -1,6 +1,8 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
     secret: '%env(APP_SECRET)%'
+    csrf_protection: true        # <<< AJOUT OBLIGATOIRE
+    http_method_override: true
 
     # Configuration pour reverse proxies Railway
     trusted_proxies: '%env(TRUSTED_PROXIES)%'
