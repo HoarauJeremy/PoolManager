@@ -147,8 +147,12 @@ class InterventionType extends AbstractType
                 'expanded' => true,
                 'placeholder' => 'Matériels',
                 'attr' => [
-                    'class' => 'flex flex-col text-center bg-white w-full p-2 my-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                    'class' => 'flex flex-col text-center bg-white w-full p-2 my-4 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
                 ],
+                'choice_attr' => function () {
+                    // Chaque ligne (input + label) sur la même ligne
+                    return ['class' => 'flex items-center gap-2'];
+                },
             ])
 
             // ============================================
