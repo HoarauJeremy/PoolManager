@@ -7,14 +7,9 @@ APP_ENV="${APP_ENV:-prod}"
 APP_DEBUG="${APP_DEBUG:-0}"
 PORT="${PORT:-80}"
 
-# Bascule dev si on charge les fixtures (une seule fois)
-if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
-  export APP_ENV=dev
-  export APP_DEBUG=1
-else
-  export APP_ENV=prod
-  export APP_DEBUG=0
-fi
+# Toujours en mode prod (même pour les fixtures) pour éviter les problèmes HTTPS
+export APP_ENV=prod
+export APP_DEBUG=0
 
 echo "FLAGS => APP_ENV=${APP_ENV} RUN_BOOT_TASKS=${RUN_BOOT_TASKS:-0} LOAD_FIXTURES=${LOAD_FIXTURES:-0}"
 
@@ -89,7 +84,8 @@ APACHE_PID=$!
     php bin/console assets:install --no-interaction --env="${APP_ENV}" || true
 
     if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
-      php -d memory_limit=-1 bin/console doctrine:fixtures:load --no-interaction -vvv --env="${APP_ENV}" || true
+      echo "-> Chargement des fixtures en mode prod"
+      php -d memory_limit=-1 bin/console doctrine:fixtures:load --no-interaction -vvv --env=prod || true
     fi
   fi
 
