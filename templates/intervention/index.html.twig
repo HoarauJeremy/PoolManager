@@ -7,8 +7,8 @@
 
 {% block body %}
 	{# =======================
-		   ✅ En-tête fixe en haut de la page
-		   ======================= #}
+			   ✅ En-tête fixe en haut de la page
+			   ======================= #}
 	<div
 		class="fixed top-0 left-0 right-0 bg-white shadow-md z-1 py-4 px-6 w">
 		{# Titre principal #}
@@ -36,8 +36,8 @@
 			class="overflow-x-auto">
 
 			{# =======================
-						   📋 Tableau des interventions
-						   ======================= #}
+									   📋 Tableau des interventions
+									   ======================= #}
 			<table
 				class="w-full bg-white rounded-lg overflow-hidden">
 
@@ -97,8 +97,18 @@
 							</td>
 
 							{# Statut (Enum) avec un style visuel en badge bleu #}
-							<td class="px-4 py-3 text-sm">
-								<span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-medium">
+							<td class="px-6 py-4 whitespace-nowrap">
+								{% set statusClass = '' %}
+								{% if intervention.status.value == 'Planifer' %}
+									{% set statusClass = 'bg-blue-100 text-blue-800' %}
+								{% elseif intervention.status.value == 'En cours' %}
+									{% set statusClass = 'bg-yellow-100 text-yellow-800' %}
+								{% elseif intervention.status.value == 'Terminer' %}
+									{% set statusClass = 'bg-green-100 text-green-800' %}
+								{% else %}
+									{% set statusClass = 'bg-red-100 text-red-800' %}
+								{% endif %}
+								<span class="px-3 py-1 text-xs font-semibold rounded-full {{ statusClass }}">
 									{{ intervention.status.label() }}
 								</span>
 							</td>
