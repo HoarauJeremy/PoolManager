@@ -6,6 +6,7 @@ use App\Enum\Status;
 use App\Repository\InterventionRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,9 +15,38 @@ use Symfony\Component\Routing\Attribute\Route;
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(): Response
-    {
-        return new Response('OK');
+    public function index(
+        Request $request,
+        LoggerInterface $logger,
+        InterventionRepository $interventionRepository,
+        UserRepository $userRepository
+    ): Response {
+        try {
+            $user = $this->getUser();
+            if (!$user) {
+                throw new \Exception('User not authenticated');
+            }
+            
+            $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
+
+            // Pagination
+            $page = max(1, $request->query->getInt('page', 1));
+            $limit = 10;
+
+            // Filtre de statut
+            $statusFilter = $request->query->get('status', 'all');
+
+            if ($isAdmin) {
+                // Dashboard Admin
+                return $this->renderAdminDashboard($interventionRepository, $page, $limit, $statusFilter);
+            } else {
+                // Dashboard Technicien
+                return $this->renderUserDashboard($interventionRepository, $userRepository, $user, $page, $limit);
+            }
+        } catch (\Throwable $e) {
+            $logger->error('DASHBOARD FAIL: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return new Response('Dashboard error: '.$e->getMessage(), 500);
+        }
     }
 
     private function renderAdminDashboard(InterventionRepository $repository, int $page, int $limit, string $statusFilter = 'all'): Response
