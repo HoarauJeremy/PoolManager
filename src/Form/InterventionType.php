@@ -144,9 +144,10 @@ class InterventionType extends AbstractType
                     return $materiel->getLibelle() . ' ' . $materiel->getDescription();
                 },
                 'multiple' => true, // Plusieurs matériels peuvent être associés
+                'expanded' => true,
                 'placeholder' => 'Matériels',
                 'attr' => [
-                    'class' => 'text-center bg-white w-full p-2 my-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                    'class' => 'flex flex-col text-center bg-white w-full p-2 my-4 border border-gray-300 rounded-full focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
                 ],
             ])
 
@@ -175,10 +176,12 @@ class InterventionType extends AbstractType
                 'choice_label' => function (User $user) {
                     return $user->getNom() . ' ' . $user->getPrenom();
                 },
+
                 'multiple' => true, // Plusieurs techniciens peuvent être associés à la même intervention
+                'expanded' => true,
                 'placeholder' => 'Techniciens',
                 'attr' => [
-                    'class' => 'text-center bg-white w-full p-2 my-4 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
+                    'class' => 'flex flex-col text-center bg-white w-full p-2 my-4 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500',
                 ],
             ]);
     }
