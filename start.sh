@@ -91,6 +91,9 @@ APACHE_PID=$!
     if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
       php -d memory_limit=-1 bin/console doctrine:fixtures:load --no-interaction -vvv --env="${APP_ENV}" || true
     fi
+
+    echo "==> DEBUG DB:"
+    php bin/console doctrine:query:sql "SELECT COUNT(*) AS c FROM user" --env=prod || true
   fi
 
   chown -R www-data:www-data /var/www/html
