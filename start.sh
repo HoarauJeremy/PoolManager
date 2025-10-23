@@ -81,18 +81,23 @@ APACHE_PID=$!
     (npm run build || npm run prod) || true
   fi
 
-  # BACK
+  # Permissions avant les commandes Symfony pour éviter les problèmes de cache
+  chown -R www-data:www-data /var/www/html
+  chmod -R 755 /var/www/html
+
+  # BACK (exécuté en tant que www-data pour que le cache ait les bonnes permissions)
   if [[ -f bin/console ]]; then
-    php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env="${APP_ENV}" || true
-    php bin/console cache:clear --no-warmup --env="${APP_ENV}" || true
-    php bin/console cache:warmup --env="${APP_ENV}" || true
-    php bin/console assets:install --no-interaction --env="${APP_ENV}" || true
+    su -s /bin/bash www-data -c "php -d memory_limit=-1 bin/console doctrine:migrations:migrate --no-interaction --allow-no-migration --env=${APP_ENV}" || true
+    su -s /bin/bash www-data -c "php bin/console cache:clear --no-warmup --env=${APP_ENV}" || true
+    su -s /bin/bash www-data -c "php bin/console cache:warmup --env=${APP_ENV}" || true
+    su -s /bin/bash www-data -c "php bin/console assets:install --no-interaction --env=${APP_ENV}" || true
 
     if [[ "${LOAD_FIXTURES:-0}" == "1" ]]; then
-      php -d memory_limit=-1 bin/console doctrine:fixtures:load --no-interaction -vvv --env="${APP_ENV}" || true
+      su -s /bin/bash www-data -c "php -d memory_limit=-1 bin/console doctrine:fixtures:load --no-interaction -vvv --env=${APP_ENV}" || true
     fi
   fi
 
+  # Permissions finales pour être sûr
   chown -R www-data:www-data /var/www/html
   chmod -R 755 /var/www/html
 ) &
