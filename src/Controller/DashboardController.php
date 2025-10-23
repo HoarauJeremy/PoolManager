@@ -14,25 +14,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class DashboardController extends AbstractController
 {
     #[Route('/dashboard', name: 'app_dashboard')]
-    public function index(Request $request, InterventionRepository $interventionRepository, UserRepository $userRepository): Response
+    public function index(): Response
     {
-        $user = $this->getUser();
-        $isAdmin = in_array('ROLE_ADMIN', $user->getRoles());
-
-        // Pagination
-        $page = max(1, $request->query->getInt('page', 1));
-        $limit = 10;
-
-        // Filtre de statut
-        $statusFilter = $request->query->get('status', 'all');
-
-        if ($isAdmin) {
-            // Dashboard Admin
-            return $this->renderAdminDashboard($interventionRepository, $page, $limit, $statusFilter);
-        } else {
-            // Dashboard Technicien
-            return $this->renderUserDashboard($interventionRepository, $userRepository, $user, $page, $limit);
-        }
+        return new Response('OK');
     }
 
     private function renderAdminDashboard(InterventionRepository $repository, int $page, int $limit, string $statusFilter = 'all'): Response
