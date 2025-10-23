@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Vérifier que les assets CSS existent
+echo "=== CHECKING CSS FILES AT RUNTIME ==="
+ls -la /var/www/html/public/build/ || echo "WARNING: public/build directory not found!"
+find /var/www/html/public/build -name "*.css" -ls || echo "WARNING: No CSS files found!"
+echo "======================================"
+
 # Configure Apache to listen on PORT environment variable (for Render.com and other cloud platforms)
 if [ -n "$PORT" ]; then
   echo "Configuring Apache to listen on port $PORT"

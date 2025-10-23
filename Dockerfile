@@ -24,6 +24,9 @@ COPY public ./public
 # Build des assets (Webpack Encore)
 RUN npm run build
 
+# Vérifier que les fichiers CSS ont bien été créés
+RUN ls -la public/build/ && echo "=== CSS BUILD VERIFICATION ===" && find public/build -name "*.css" -ls
+
 # ================================
 # STAGE 2: Install PHP dependencies
 # ================================
@@ -104,6 +107,9 @@ COPY --from=node-builder --chown=www-data:www-data /app/node_modules ./node_modu
 # Supprimer le dossier public/build local (s'il existe) et copier les assets buildés
 RUN rm -rf ./public/build
 COPY --from=node-builder --chown=www-data:www-data /app/public/build ./public/build
+
+# Vérifier que les assets ont bien été copiés dans l'image finale
+RUN ls -la ./public/build/ && echo "=== FINAL CSS VERIFICATION ===" && find ./public/build -name "*.css" -ls
 
 # Variables d'environnement pour production
 ENV APP_ENV=prod
